@@ -24,6 +24,13 @@ const registerUser = async (req, res) => {
             })
         }
 
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'A senha precisa ter pelo menos 6 caracteres!'
+            })
+        }
+
         const hashedPassword = await hashPassword(password)
 
         const user = new User({
