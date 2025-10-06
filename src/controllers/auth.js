@@ -1,5 +1,6 @@
 import User from "../models/users.js"
 import { hashPassword } from "../utils/password.js"
+import { registerUserSchema } from "../validations/register.js"
 
 const registerUser = async (req, res) => {
     const {
@@ -7,6 +8,17 @@ const registerUser = async (req, res) => {
         email,
         password
     } = req.body
+
+    try {
+        await registerUserSchema.validate(req.body, { abortEarly: false })
+    } catch (error) {
+        const { errors } = error
+
+        return res.status(400).json({
+            success: false,
+            errors
+        })
+    }
 
     try {
 
@@ -18,16 +30,11 @@ const registerUser = async (req, res) => {
         })
 
         if (userExists) {
-            return res.status(400).json({
-                success: false,
-                message: 'Usuário já cadastrado!'
-            })
-        }
+            console.log('Usuário já cadastrado!')
 
-        if (password.length < 6) {
             return res.status(400).json({
                 success: false,
-                message: 'A senha precisa ter pelo menos 6 caracteres!'
+                message: 'Não foi possível cadastrar o usuário!'
             })
         }
 
@@ -47,7 +54,7 @@ const registerUser = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
+        console.log('Erro ao salvar no banco de dados!', error.errors)
 
         res.status(500).json({
             sucess: false,
