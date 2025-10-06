@@ -1,6 +1,7 @@
 import User from "../models/users.js"
-import { hashPassword } from "../utils/password.js"
+import { hashPassword, comparePassword } from "../utils/password.js"
 import { registerUserSchema } from "../validations/register.js"
+import loginUserSchema from "../validations/login.js"
 
 const registerUser = async (req, res) => {
     const {
@@ -63,4 +64,57 @@ const registerUser = async (req, res) => {
     }
 }
 
-export { registerUser }
+const loginUser = async (req, res) => {
+    const { email, password } = req.body
+
+    try {
+        await loginUserSchema.validate(req.body, { abortEarly: false })
+    } catch (error) {
+        const { errors } = error
+
+        return res.status(400).json({
+            success: false,
+            errors
+        })
+    }
+
+    try {
+        const userExists = await User.findOne({ email })
+
+        if (!userExists) {
+            console.log('Email não está cadastrado no banco de dados!')
+
+            return res.status(400).json({
+                success: false,
+                message: 'Credenciais inválidas!'
+            })
+        }
+
+        const userPassword = userExists.password
+
+        const isPasswordValid = await comparePassword(password, userPassword)
+
+        if (!isPasswordValid) {
+            console.log('Senha incorreta!')
+
+            return res.status(400).json({
+                success: false,
+                message: 'Credenciais inválidas!'
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Login realizado com sucesso!'
+        })
+    } catch (error) {
+        console.log('Erro ao consultar no banco de dados!', error.errors)
+
+        res.status(500).json({
+            sucess: false,
+            message: 'Erro interno no servidor!'
+        })
+    }
+}
+
+export { registerUser, loginUser }

@@ -8,4 +8,10 @@ const hashPassword = async (password) => {
     return hashedPassword
 }
 
-export { hashPassword }
+const comparePassword = async(password, userPassword) => {
+    const isPasswordValid = await bcrypt.compare(password, userPassword)
+
+    return isPasswordValid
+}
+
+export { hashPassword, comparePassword }
