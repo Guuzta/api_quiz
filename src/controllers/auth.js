@@ -1,7 +1,11 @@
 import User from "../models/users.js"
+
 import { hashPassword, comparePassword } from "../utils/password.js"
+
 import { registerUserSchema } from "../validations/register.js"
 import loginUserSchema from "../validations/login.js"
+
+import generateToken from "../utils/generateToken.js"
 
 const registerUser = async (req, res) => {
     const {
@@ -79,9 +83,9 @@ const loginUser = async (req, res) => {
     }
 
     try {
-        const userExists = await User.findOne({ email })
+        const user = await User.findOne({ email })
 
-        if (!userExists) {
+        if (!user) {
             console.log('Email não está cadastrado no banco de dados!')
 
             return res.status(400).json({
@@ -90,7 +94,7 @@ const loginUser = async (req, res) => {
             })
         }
 
-        const userPassword = userExists.password
+        const userPassword = user.password
 
         const isPasswordValid = await comparePassword(password, userPassword)
 
@@ -103,12 +107,20 @@ const loginUser = async (req, res) => {
             })
         }
 
+        const token = generateToken(user)
+
         return res.status(200).json({
             success: true,
-            message: 'Login realizado com sucesso!'
+            message: 'Login realizado com sucesso!',
+            token,
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
         })
     } catch (error) {
-        console.log('Erro ao consultar no banco de dados!', error.errors)
+        console.log('Erro ao consultar no banco de dados!', error)
 
         res.status(500).json({
             sucess: false,
