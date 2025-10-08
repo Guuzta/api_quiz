@@ -5,7 +5,8 @@ import { hashPassword, comparePassword } from "../utils/password.js"
 import { registerUserSchema } from "../validations/register.js"
 import loginUserSchema from "../validations/login.js"
 
-import generateToken from "../utils/generateToken.js"
+import generateAccessToken from "../utils/tokens/accessToken.js"
+import generateRefreshToken from "../utils/tokens/refreshToken.js"
 
 const registerUser = async (req, res) => {
     const {
@@ -107,12 +108,19 @@ const loginUser = async (req, res) => {
             })
         }
 
-        const token = generateToken(user)
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+
+        user.refreshToken = refreshToken
+        await user.save()
+
+        console.log(user)
 
         return res.status(200).json({
             success: true,
             message: 'Login realizado com sucesso!',
-            token,
+            accessToken,
+            refreshToken,
             user: {
                 name: user.name,
                 email: user.email,
@@ -120,7 +128,7 @@ const loginUser = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('Erro ao consultar no banco de dados!', error)
+        console.log('Erro interno no servidor!', error)
 
         res.status(500).json({
             sucess: false,
