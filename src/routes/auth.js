@@ -1,5 +1,12 @@
 import { Router } from 'express'
-import { registerUser, loginUser,  refreshUser } from '../controllers/auth.js'
+
+import {
+    registerUser,
+    loginUser,
+    refreshUser,
+    logoutUser
+} from '../controllers/auth.js'
+
 import authenticateToken from '../middleware/authenticateToken.js'
 
 const router = Router()
@@ -10,7 +17,9 @@ router.post('/login', loginUser)
 
 router.post('/refresh', refreshUser)
 
-router.get('/dashboard', authenticateToken, (req,res) => {
+router.post('/logout', logoutUser)
+
+router.get('/dashboard', authenticateToken, (req, res) => {
 
     const user = req.user
 

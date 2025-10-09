@@ -181,4 +181,42 @@ const refreshUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, refreshUser }
+const logoutUser = async (req, res) => {
+    const { refreshToken } = req.body
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            success: false,
+            message: 'Token de atualização não fornecido!'
+        })
+    }
+
+    try {
+        const user = await User.findOne({ refreshToken })
+
+        if (!user) {
+            return res.status(403).json({
+                success: false,
+                message: 'Token de atualização inválido!'
+            })
+        }
+
+        user.refreshToken = null
+        await user.save()
+
+        res.status(201).json({
+            success: true,
+            message: 'Logout realizado com sucesso!'
+        })
+    } catch (error) {
+        console.log('Erro interno no servidor ao tentar logout!', error)
+
+        res.status(500).json({
+            success: false,
+            message: 'Erro interno no servidor ao tentar logout!'
+        })
+    }
+
+}
+
+export { registerUser, loginUser, refreshUser, logoutUser }
