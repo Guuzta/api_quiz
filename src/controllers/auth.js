@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 import User from "../models/users.js"
 
 import { hashPassword, comparePassword } from "../utils/password.js"
@@ -114,8 +116,6 @@ const loginUser = async (req, res) => {
         user.refreshToken = refreshToken
         await user.save()
 
-        console.log(user)
-
         return res.status(200).json({
             success: true,
             message: 'Login realizado com sucesso!',
@@ -137,4 +137,48 @@ const loginUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser }
+const refreshUser = async (req, res) => {
+
+    const { refreshToken } = req.body
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            success: false,
+            message: 'Token de atualização não fornecido!'
+        })
+    }
+
+    const user = await User.findOne({ refreshToken })
+
+    if (!user) {
+        return res.status(403).json({
+            success: false,
+            message: 'Token de atualização inválido!'
+        })
+    }
+
+    try {
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+        const accessToken = generateAccessToken(user)
+        const newRefreshToken = generateRefreshToken(user)
+
+        user.refreshToken = newRefreshToken
+        await user.save()
+
+        return res.status(200).json({
+            success: true,
+            accessToken,
+            refreshToken: newRefreshToken
+        })
+    } catch (error) {
+        console.error(error)
+
+        return res.status(403).json({
+            success: false,
+            message: 'Token de atualização inválido!'
+        })
+    }
+}
+
+export { registerUser, loginUser, refreshUser }

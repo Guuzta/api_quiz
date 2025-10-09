@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { registerUser, loginUser } from '../controllers/auth.js'
+import { registerUser, loginUser,  refreshUser } from '../controllers/auth.js'
 import authenticateToken from '../middleware/authenticateToken.js'
 
 const router = Router()
@@ -7,6 +7,8 @@ const router = Router()
 router.post('/register', registerUser)
 
 router.post('/login', loginUser)
+
+router.post('/refresh', refreshUser)
 
 router.get('/dashboard', authenticateToken, (req,res) => {
 
