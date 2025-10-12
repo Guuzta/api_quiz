@@ -16,7 +16,8 @@ const questionSchema = new Schema({
     difficulty: {
         type: String,
         enum: ['fácil', 'médio', 'difícil'],
-        required: true
+        required: true,
+        lowercase: true
     },
     options: {
         type: [String],
@@ -32,8 +33,6 @@ const questionSchema = new Schema({
         validate: {
             validator: function (answer) {
                 return this.options && answer >= 0 && answer < this.options.length
-                // Verifica se o índice de opções e resposta são maiores ou igual a 0
-                // Verifica se o índice de resposta existe dentro do array de opções
             },
             message: 'O índice da resposta correta é inválido!'
         }
