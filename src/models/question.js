@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 const { Schema } = mongoose
 
 const questionSchema = new Schema({
-    question: {
+    text: {
         type: String,
         required: true,
         trim: true
@@ -30,7 +30,7 @@ const questionSchema = new Schema({
         type: Number,
         required: true,
         validate: {
-            validator: (answer) => {
+            validator: function (answer) {
                 return this.options && answer >= 0 && answer < this.options.length
                 // Verifica se o índice de opções e resposta são maiores ou igual a 0
                 // Verifica se o índice de resposta existe dentro do array de opções
