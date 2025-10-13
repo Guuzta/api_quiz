@@ -1,6 +1,11 @@
 import { Router } from "express"
 
-import { createQuestion, getQuestionById, updateQuestion } from "../controllers/admin.js"
+import { 
+    createQuestion, 
+    getQuestionById, 
+    updateQuestion,
+    deleteQuestion 
+} from "../controllers/admin.js"
 
 import authenticateToken from "../middleware/authenticateToken.js"
 import requireAdmin from "../middleware/requiredAdmin.js"
@@ -32,6 +37,13 @@ router.patch(
     requireAdmin, 
     validateRequest(updateQuestionSchema), 
     updateQuestion
+)
+
+router.delete(
+    '/questions/:id',
+    authenticateToken,
+    requireAdmin,
+    deleteQuestion
 )
 
 export default router
