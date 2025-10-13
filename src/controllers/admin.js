@@ -2,8 +2,6 @@ import mongoose from "mongoose"
 
 import Question from "../models/question.js"
 
-import createQuestionSchema from "../validations/questions/createQuestion.js"
-import updateQuestionSchema from "../validations/questions/updateQuestion.js"
 
 const createQuestion = async (req, res) => {
      const {
@@ -15,17 +13,6 @@ const createQuestion = async (req, res) => {
           source,
           createdBy
      } = req.body
-
-     try {
-          await createQuestionSchema.validate(req.body, { abortEarly: false })
-     } catch (error) {
-          const { errors } = error
-
-          return res.status(400).json({
-               success: false,
-               errors
-          })
-     }
 
      try {
 

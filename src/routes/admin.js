@@ -6,14 +6,32 @@ import authenticateToken from "../middleware/authenticateToken.js"
 import requireAdmin from "../middleware/requiredAdmin.js"
 import validateRequest from "../middleware/validateRequest.js"
 
+import createQuestionSchema from "../validations/questions/createQuestion.js"
 import updateQuestionSchema from "../validations/questions/updateQuestion.js"
 
 const router = Router()
 
-router.post('/questions', authenticateToken, requireAdmin, createQuestion)
+router.post(
+    '/questions', 
+    authenticateToken, 
+    requireAdmin,
+    validateRequest(createQuestionSchema), 
+    createQuestion
+)
 
-router.get('/questions/:id', authenticateToken, requireAdmin, getQuestionById)
+router.get(
+    '/questions/:id', 
+    authenticateToken, 
+    requireAdmin, 
+    getQuestionById
+)
 
-router.patch('/questions/:id', authenticateToken, requireAdmin, validateRequest(updateQuestionSchema), updateQuestion)
+router.patch(
+    '/questions/:id', 
+    authenticateToken, 
+    requireAdmin, 
+    validateRequest(updateQuestionSchema), 
+    updateQuestion
+)
 
 export default router
