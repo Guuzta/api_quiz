@@ -1,6 +1,6 @@
 import { object, string, number, array } from 'yup'
 
-const questionSchema = object({
+const createQuestionSchema = object({
     text: string()
         .required('Campo texto é obrigatório!'),
     category: string()
@@ -20,4 +20,4 @@ const questionSchema = object({
         .required('O campo createdBy é obrigatório!')
 })
 
-export default questionSchema
+export default createQuestionSchema
