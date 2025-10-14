@@ -14,7 +14,8 @@ const registerUser = async (req, res) => {
     const {
         name,
         email,
-        password
+        password,
+        role
     } = req.body
 
     try {
@@ -51,7 +52,8 @@ const registerUser = async (req, res) => {
         const user = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role
         })
 
         await user.save()
