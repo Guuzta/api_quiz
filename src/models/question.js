@@ -3,6 +3,11 @@ import mongoose from "mongoose"
 const { Schema } = mongoose
 
 const questionSchema = new Schema({
+    quizId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Question',
+        required: true
+    },
     text: {
         type: String,
         required: true,
