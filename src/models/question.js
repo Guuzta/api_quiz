@@ -5,7 +5,7 @@ const { Schema } = mongoose
 const questionSchema = new Schema({
     quizId: {
         type: Schema.Types.ObjectId,
-        ref: 'Question',
+        ref: 'Quiz',
         required: true
     },
     text: {

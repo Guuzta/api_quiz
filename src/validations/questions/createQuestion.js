@@ -1,6 +1,8 @@
 import { object, string, number, array } from 'yup'
 
 const createQuestionSchema = object({
+    quizId: string()
+        .required('O campo quizId é obrigatório!'),
     text: string()
         .required('Campo texto é obrigatório!'),
     category: string()
