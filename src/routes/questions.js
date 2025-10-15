@@ -5,7 +5,7 @@ import {
     getQuestionById,
     updateQuestion,
     deleteQuestion
-} from '../controllers/user.js'
+} from '../controllers/question.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
 import validateRequest from '../middleware/validateRequest.js'
@@ -37,6 +37,7 @@ router.patch(
 
 router.delete(
     '/questions/:id',
+    authenticateToken,
     deleteQuestion
 )
 
