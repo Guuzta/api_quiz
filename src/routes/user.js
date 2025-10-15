@@ -2,7 +2,8 @@ import { Router } from 'express'
 
 import {
     createQuestion,
-    getQuestionById
+    getQuestionById,
+    updateQuestion
 } from '../controllers/user.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
@@ -24,6 +25,13 @@ router.get(
     '/questions/:id',
     authenticateToken,
     getQuestionById
+)
+
+router.patch(
+    '/questions/:id',
+    authenticateToken,
+    validateRequest(updateQuestionSchema),
+    updateQuestion
 )
 
 export default router

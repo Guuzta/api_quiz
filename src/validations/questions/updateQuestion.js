@@ -15,7 +15,7 @@ const updateQuestionSchema = object({
         .min(2, 'A questão precisa ter pelo menos duas opções!'),
     correctAnswer: number()
         .integer('O índice da resposta deve ser um número inteiro!')
-        .min(0, 'O índice da resposta correta não pode um número negativo!'),
+        .min(0, 'O índice da resposta correta não pode ser um número negativo!'),
 })
 
 export default updateQuestionSchema
