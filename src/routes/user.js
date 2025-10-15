@@ -1,7 +1,8 @@
 import { Router } from 'express'
 
 import {
-    createQuestion
+    createQuestion,
+    getQuestionById
 } from '../controllers/user.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
@@ -17,6 +18,12 @@ router.post(
     authenticateToken,
     validateRequest(createQuestionSchema),
     createQuestion
+)
+
+router.get(
+    '/questions/:id',
+    authenticateToken,
+    getQuestionById
 )
 
 export default router
