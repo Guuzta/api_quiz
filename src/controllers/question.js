@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 
-import User from "../models/users.js"
-import Quiz from "../models/quiz.js"
-import Question from "../models/question.js"
+import User from "../models/User.js"
+import Quiz from "../models/Quiz.js"
+import Question from "../models/Question.js"
 
 const createQuestion = async (req, res) => {
     const {

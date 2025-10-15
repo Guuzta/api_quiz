@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import User from "../models/users.js"
+import User from "../models/User.js"
 
 import { hashPassword, comparePassword } from "../utils/password.js"
 
