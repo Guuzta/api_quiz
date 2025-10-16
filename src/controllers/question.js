@@ -56,6 +56,11 @@ const createQuestion = async (req, res) => {
             createdBy
         })
 
+        await Quiz.findByIdAndUpdate(
+            quizId,
+            { $push: { questions: question._id } }
+        )
+
         await question.save()
 
         res.status(201).json({
