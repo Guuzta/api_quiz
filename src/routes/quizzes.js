@@ -1,7 +1,8 @@
 import { Router } from 'express'
 
 import {
-    createQuiz
+    createQuiz,
+    getQuizById
 } from '../controllers/quiz.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
@@ -16,6 +17,12 @@ router.post(
     authenticateToken,
     validateRequest(createQuizSchema),
     createQuiz
+)
+
+router.get(
+    '/quizzes/:id',
+    authenticateToken,
+    getQuizById
 )
 
 export default router
