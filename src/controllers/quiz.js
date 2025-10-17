@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 
 import User from "../models/User.js"
 import Quiz from "../models/Quiz.js"
+import Question from "../models/Question.js"
 
 const createQuiz = async (req, res) => {
     const {
@@ -95,7 +96,47 @@ const getQuizById = async (req, res) => {
     }
 }
 
+const updateQuiz = async (req, res) => {
+    const { id } = req.params
+    const updates = req.updates
+
+    try {
+        const isValid = mongoose.Types.ObjectId.isValid(id)
+
+        if(!isValid) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID do Quiz inválido!'
+            })
+        }
+
+        const quiz = await Quiz.findByIdAndUpdate(id, updates, { new: true })
+
+        if(!quiz) {
+            return res.status(404).json({
+                success: false,
+                message: 'Quiz não encontrado!'
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Quiz atualizado com sucesso!',
+            updatedQuiz: quiz
+        })
+        
+    } catch (error) {
+        console.log('Erro interno no servidor ao atualizar questão!', error)
+
+        res.status(500).json({
+            success: false,
+            message: 'Erro interno no servidor ao atualizar questão!'
+        })
+    }
+}
+
 export {
     createQuiz,
-    getQuizById
+    getQuizById,
+    updateQuiz
 }
