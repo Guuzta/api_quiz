@@ -3,7 +3,8 @@ import { Router } from 'express'
 import {
     createQuiz,
     getQuizById,
-    updateQuiz
+    updateQuiz,
+    deleteQuiz
 } from '../controllers/quiz.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
@@ -32,6 +33,12 @@ router.patch(
     authenticateToken,
     validateRequest(updateQuizSchema),
     updateQuiz
+)
+
+router.delete(
+    '/quizzes/:id',
+    authenticateToken,
+    deleteQuiz
 )
 
 export default router
