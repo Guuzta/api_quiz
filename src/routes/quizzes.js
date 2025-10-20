@@ -3,6 +3,7 @@ import { Router } from 'express'
 import {
     createQuiz,
     getQuizById,
+    getUserQuizzes,
     updateQuiz,
     deleteQuiz
 } from '../controllers/quiz.js'
@@ -26,6 +27,12 @@ router.get(
     '/quizzes/:id',
     authenticateToken,
     getQuizById
+)
+
+router.get(
+    '/users/:id/quizzes',
+    authenticateToken,
+    getUserQuizzes
 )
 
 router.patch(
