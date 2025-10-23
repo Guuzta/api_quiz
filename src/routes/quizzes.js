@@ -4,6 +4,7 @@ import {
     createQuiz,
     getQuizById,
     getUserQuizzes,
+    getAllQuizzes,
     updateQuiz,
     deleteQuiz
 } from '../controllers/quiz.js'
@@ -33,6 +34,12 @@ router.get(
     '/users/:id/quizzes',
     authenticateToken,
     getUserQuizzes
+)
+
+router.get(
+    '/quizzes',
+    authenticateToken,
+    getAllQuizzes
 )
 
 router.patch(

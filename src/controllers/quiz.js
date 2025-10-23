@@ -16,7 +16,7 @@ const createQuiz = async (req, res) => {
     try {
         const isValid = mongoose.Types.ObjectId.isValid(createdBy)
 
-        if(!isValid) {
+        if (!isValid) {
             return res.status(400).json({
                 success: false,
                 message: 'ID do Usuário inválido!'
@@ -25,7 +25,7 @@ const createQuiz = async (req, res) => {
 
         const user = await User.findById(createdBy)
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: 'Usuário não encontrado!'
@@ -50,7 +50,7 @@ const createQuiz = async (req, res) => {
         })
     } catch (error) {
         console.log('Erro interno no servidor ao tentar criar quiz!', error)
-        
+
         res.status(500).json({
             success: false,
             message: 'Erro interno no servidor ao tentar criar quiz!'
@@ -64,7 +64,7 @@ const getQuizById = async (req, res) => {
     try {
         const isValid = mongoose.Types.ObjectId.isValid(id)
 
-        if(!isValid) {
+        if (!isValid) {
             return res.status(400).json({
                 success: false,
                 message: 'ID do Quiz inválido!'
@@ -73,7 +73,7 @@ const getQuizById = async (req, res) => {
 
         const quiz = await Quiz.findById(id).populate('questions')
 
-        if(!quiz) {
+        if (!quiz) {
             return res.status(404).json({
                 success: false,
                 message: 'Quiz não encontrado!'
@@ -110,7 +110,7 @@ const getUserQuizzes = async (req, res) => {
     try {
         const isValid = mongoose.Types.ObjectId.isValid(id)
 
-        if(!isValid) {
+        if (!isValid) {
             return res.status(400).json({
                 success: false,
                 message: 'ID do Usuário inválido!'
@@ -119,7 +119,7 @@ const getUserQuizzes = async (req, res) => {
 
         const user = await User.findById(id)
 
-        if(!user) {
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: 'Usuário não encontrado!'
@@ -143,6 +143,25 @@ const getUserQuizzes = async (req, res) => {
     }
 }
 
+const getAllQuizzes = async (req, res) => {
+    try {
+        const quizzes = await Quiz.find({})
+
+        res.status(200).json({
+            success: true,
+            message: 'Quizzes encontrados com sucesso!',
+            quizzes
+        })
+    } catch (error) {
+        console.log('Erro interno no servidor ao buscar Quizzes!', error)
+
+        res.status(500).json({
+            success: false,
+            message: 'Erro interno no servidor ao buscar Quizzes!'
+        })
+    }
+}
+
 const updateQuiz = async (req, res) => {
     const { id } = req.params
     const updates = req.updates
@@ -150,7 +169,7 @@ const updateQuiz = async (req, res) => {
     try {
         const isValid = mongoose.Types.ObjectId.isValid(id)
 
-        if(!isValid) {
+        if (!isValid) {
             return res.status(400).json({
                 success: false,
                 message: 'ID do Quiz inválido!'
@@ -159,7 +178,7 @@ const updateQuiz = async (req, res) => {
 
         const quiz = await Quiz.findByIdAndUpdate(id, updates, { new: true })
 
-        if(!quiz) {
+        if (!quiz) {
             return res.status(404).json({
                 success: false,
                 message: 'Quiz não encontrado!'
@@ -171,7 +190,7 @@ const updateQuiz = async (req, res) => {
             message: 'Quiz atualizado com sucesso!',
             updatedQuiz: quiz
         })
-        
+
     } catch (error) {
         console.log('Erro interno no servidor ao atualizar questão!', error)
 
@@ -188,7 +207,7 @@ const deleteQuiz = async (req, res) => {
     try {
         const isValid = mongoose.Types.ObjectId.isValid(id)
 
-        if(!isValid) {
+        if (!isValid) {
             return res.status(400).json({
                 success: false,
                 message: 'ID do Quiz inválido!'
@@ -197,7 +216,7 @@ const deleteQuiz = async (req, res) => {
 
         const quiz = await Quiz.findByIdAndDelete(id)
 
-        if(!quiz) {
+        if (!quiz) {
             return res.status(404).json({
                 success: false,
                 message: 'Quiz não encontrado!'
@@ -222,6 +241,7 @@ export {
     createQuiz,
     getQuizById,
     getUserQuizzes,
+    getAllQuizzes,
     updateQuiz,
     deleteQuiz
 }
