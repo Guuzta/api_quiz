@@ -6,7 +6,8 @@ import {
     getUserQuizzes,
     getAllQuizzes,
     updateQuiz,
-    deleteQuiz
+    deleteQuiz,
+    startQuiz
 } from '../controllers/quiz.js'
 
 import authenticateToken from '../middleware/authenticateToken.js'
@@ -53,6 +54,12 @@ router.delete(
     '/quizzes/:id',
     authenticateToken,
     deleteQuiz
+)
+
+router.post(
+    '/quizzes/:quizId/start',
+    authenticateToken,
+    startQuiz
 )
 
 export default router
