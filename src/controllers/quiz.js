@@ -276,7 +276,7 @@ const startQuiz = async (req, res) => {
         }
 
         const questionSnapshots = quiz.questions.map(question => {
-            const shuffledOrder = questions.options
+            const shuffledOrder = question.options
             .map((option, index) => ({ option, index }))
             .sort(() => Math.random() - 0.5)
             .map(object => object.index)
