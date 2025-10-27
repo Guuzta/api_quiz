@@ -1,6 +1,9 @@
 import { Router } from "express"
 
-import { answerAttempt } from "../controllers/attempt.js"
+import { 
+    answerAttempt, 
+    finishAttempt 
+} from "../controllers/attempt.js"
 
 import authenticateToken from "../middleware/authenticateToken.js"
 
@@ -10,6 +13,12 @@ router.post(
     '/attempts/:attemptId/answer',
     authenticateToken,
     answerAttempt
+)
+
+router.post(
+    '/attempts/:attemptId/finish',
+    authenticateToken,
+    finishAttempt
 )
 
 export default router
