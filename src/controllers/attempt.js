@@ -73,6 +73,7 @@ const answerAttempt = async (req, res) => {
         })
 
         attempt.score += pointsAwarded
+        attempt.lastActivityAt = Date.now()
 
         await attempt.save()
 
@@ -124,7 +125,7 @@ const finishAttempt = async (req, res) => {
             })
         }
 
-        const attemptIsFinished = attempt.status === 'finished' ? true : false
+        const attemptIsFinished = attempt.status === 'finished' || 'abandoned' ? true : false
 
         if(attemptIsFinished) {
             return res.status(403).json({

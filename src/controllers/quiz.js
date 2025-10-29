@@ -243,6 +243,17 @@ const startQuiz = async (req, res) => {
     const userId = req.user.sub
 
     try {
+        await Attempt.updateMany(
+            {userId, status: 'in_progress'},
+            {
+                $set: {
+                    status: 'abandoned',
+                    finishedAt: Date.now(),
+                    abandonedReason: 'new_start'
+                }
+            }
+        )
+
         const isValid = mongoose.Types.ObjectId.isValid(quizId)
 
         if(!isValid) {

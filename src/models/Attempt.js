@@ -59,6 +59,11 @@ const attemptSchema = new Schema ({
         default: Date.now
     },
 
+    lastActivityAt: {
+        type: Date,
+        default: Date.now
+    },
+
     finishedAt: {
         type: Date
     },
@@ -67,7 +72,13 @@ const attemptSchema = new Schema ({
         type: String,
         enum: [ 'in_progress', 'finished', 'abandoned' ],
         default: 'in_progress'
+    },
+
+    abandonedReason: {
+        type: String,
+        enum: [ 'new_start', 'timeout' ]
     }
+
 })
 
 const Attempt = mongoose.model('Attempt', attemptSchema)
