@@ -3,6 +3,8 @@ import express from 'express'
 
 import connectDB from './config/database.js'
 
+import startCronJobs from './cron.js'
+
 import authRoutes from './routes/auth.js'
 import adminRoutes from './routes/admin.js'
 import questionRoutes from './routes/questions.js'
@@ -10,6 +12,7 @@ import quizRoutes from './routes/quizzes.js'
 import attemptRoutes from './routes/attempts.js'
 
 connectDB()
+startCronJobs()
 
 const app = express()
 app.use(express.json())
