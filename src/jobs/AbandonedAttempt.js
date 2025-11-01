@@ -1,6 +1,6 @@
 import Attempt from "../models/Attempt.js"
 
-const INACTIVITY_LIMIT_MS = 1 * 60 * 1000
+const INACTIVITY_LIMIT_MS = 10 * 60 * 1000
 
 const verifyAbandonedAttempts = async () => {
     const timeLimit = new Date (Date.now() - INACTIVITY_LIMIT_MS)
