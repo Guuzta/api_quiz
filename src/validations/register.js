@@ -12,4 +12,4 @@ const registerUserSchema = object({
         .min(6, 'A senha precisa ter pelo menos 6 caracteres!')
 })
 
-export { registerUserSchema }
+export default registerUserSchema
