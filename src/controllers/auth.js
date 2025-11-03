@@ -1,10 +1,3 @@
-import jwt from 'jsonwebtoken'
-
-import User from "../models/User.js"
-
-import generateAccessToken from "../utils/tokens/accessToken.js"
-import generateRefreshToken from "../utils/tokens/refreshToken.js"
-
 import auth from '../services/auth.js'
 
 const registerUser = async (req, res) => {
@@ -84,38 +77,22 @@ const refreshUser = async (req, res) => {
 }
 
 const logoutUser = async (req, res) => {
-    const { refreshToken } = req.body
-
-    if (!refreshToken) {
-        return res.status(401).json({
-            success: false,
-            message: 'Token de atualização não fornecido!'
-        })
-    }
-
     try {
-        const user = await User.findOne({ refreshToken })
+        await auth.logoutUser(req.body)
 
-        if (!user) {
-            return res.status(403).json({
-                success: false,
-                message: 'Token de atualização inválido!'
-            })
-        }
-
-        user.refreshToken = null
-        await user.save()
-
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: 'Logout realizado com sucesso!'
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao tentar logout!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao tentar logout!'
+            message
         })
     }
 

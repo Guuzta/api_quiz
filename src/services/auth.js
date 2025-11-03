@@ -110,4 +110,19 @@ const refreshUser = async ({ refreshToken }) => {
     return {accessToken, newRefreshToken}
 }
 
-export default { registerUser, loginUser, refreshUser }
+const logoutUser = async ({ refreshToken }) => {
+    if(!refreshToken) {
+        throw new StatusError('Token de atualização não fornecido!', 401)
+    }
+
+    const user = await User.findOne({ refreshToken })
+
+    if(!user) {
+        throw new StatusError('Token de atualização inválido!', 403)
+    }
+
+    user.refreshToken = null
+    await user.save()
+}
+
+export default { registerUser, loginUser, refreshUser, logoutUser }
