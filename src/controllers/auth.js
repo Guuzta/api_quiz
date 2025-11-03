@@ -2,10 +2,6 @@ import jwt from 'jsonwebtoken'
 
 import User from "../models/User.js"
 
-import { comparePassword } from "../utils/password.js"
-
-import loginUserSchema from "../validations/login.js"
-
 import generateAccessToken from "../utils/tokens/accessToken.js"
 import generateRefreshToken from "../utils/tokens/refreshToken.js"
 
@@ -36,49 +32,8 @@ const registerUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-    const { email, password } = req.body
-
     try {
-        await loginUserSchema.validate(req.body, { abortEarly: false })
-    } catch (error) {
-        const { errors } = error
-
-        return res.status(400).json({
-            success: false,
-            errors
-        })
-    }
-
-    try {
-        const user = await User.findOne({ email })
-
-        if (!user) {
-            console.log('Email não está cadastrado no banco de dados!')
-
-            return res.status(400).json({
-                success: false,
-                message: 'Credenciais inválidas!'
-            })
-        }
-
-        const userPassword = user.password
-
-        const isPasswordValid = await comparePassword(password, userPassword)
-
-        if (!isPasswordValid) {
-            console.log('Senha incorreta!')
-
-            return res.status(400).json({
-                success: false,
-                message: 'Credenciais inválidas!'
-            })
-        }
-
-        const accessToken = generateAccessToken(user)
-        const refreshToken = generateRefreshToken(user)
-
-        user.refreshToken = refreshToken
-        await user.save()
+        const { user, accessToken, refreshToken } = await auth.loginUser(req.body)
 
         return res.status(200).json({
             success: true,
@@ -92,11 +47,16 @@ const loginUser = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('Erro interno no servidor!', error)
+        console.log(error)
 
-        res.status(500).json({
-            sucess: false,
-            message: 'Erro interno no servidor!'
+        const status = error.statusCode || 500
+        const message = error.name === 'ValidationError' 
+        ? 'Erro interno no servidor ao logar usuário!'
+        : error.message
+
+        res.status(status).json({
+            success: false,
+            message
         })
     }
 }
