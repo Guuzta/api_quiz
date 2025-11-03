@@ -62,45 +62,23 @@ const loginUser = async (req, res) => {
 }
 
 const refreshUser = async (req, res) => {
-
-    const { refreshToken } = req.body
-
-    if (!refreshToken) {
-        return res.status(401).json({
-            success: false,
-            message: 'Token de atualização não fornecido!'
-        })
-    }
-
-    const user = await User.findOne({ refreshToken })
-
-    if (!user) {
-        return res.status(403).json({
-            success: false,
-            message: 'Token de atualização inválido!'
-        })
-    }
-
     try {
-        jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-
-        const accessToken = generateAccessToken(user)
-        const newRefreshToken = generateRefreshToken(user)
-
-        user.refreshToken = newRefreshToken
-        await user.save()
+        const { accessToken, newRefreshToken } = await auth.refreshUser(req.body)
 
         return res.status(200).json({
             success: true,
             accessToken,
-            refreshToken: newRefreshToken
+            newRefreshToken
         })
     } catch (error) {
-        console.error(error)
+        console.log(error)
 
-        return res.status(403).json({
+        const status = error.statusCode || 500
+        const message = error.message 
+
+        return res.status(status).json({
             success: false,
-            message: 'Token de atualização inválido!'
+            message
         })
     }
 }

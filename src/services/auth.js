@@ -5,6 +5,7 @@ import { hashPassword, comparePassword } from "../utils/password.js"
 import registerUserSchema from "../validations/register.js"
 import loginUserSchema from "../validations/login.js"
 
+import jwt from 'jsonwebtoken'
 import generateAccessToken from "../utils/tokens/accessToken.js"
 import generateRefreshToken from "../utils/tokens/refreshToken.js"
 
@@ -87,4 +88,26 @@ const loginUser = async (userData) => {
     return {user, accessToken, refreshToken}
 }
 
-export default { registerUser, loginUser }
+const refreshUser = async ({ refreshToken }) => {
+    if(!refreshToken) {
+        throw new StatusError('Token de atualização não fornecido!', 401)
+    }
+
+    const user = await User.findOne({ refreshToken })
+
+    if(!user) {
+        throw new StatusError('Token de atualização inválido!', 401)
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+    const accessToken = generateAccessToken(user)
+    const newRefreshToken = generateRefreshToken(user)
+
+    user.refreshToken = newRefreshToken
+    await user.save()
+
+    return {accessToken, newRefreshToken}
+}
+
+export default { registerUser, loginUser, refreshUser }
