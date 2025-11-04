@@ -51,37 +51,8 @@ const getQuizById = async (req, res) => {
 }
 
 const getUserQuizzes = async (req, res) => {
-    const { id } = req.params
-    const { category, difficulty } = req.query
-
-    const filters = Object.fromEntries(
-        Object.entries({
-            createdBy: id,
-            category,
-            difficulty
-        }).filter(([key, value]) => value !== undefined && value !== null)
-    )
-
     try {
-        const isValid = mongoose.Types.ObjectId.isValid(id)
-
-        if (!isValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID do Usuário inválido!'
-            })
-        }
-
-        const user = await User.findById(id)
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuário não encontrado!'
-            })
-        }
-
-        const quizzes = await Quiz.find(filters)
+        const quizzes = await quizService.getUserQuizzes(req.params, req.query)
 
         res.status(200).json({
             success: true,
@@ -89,11 +60,14 @@ const getUserQuizzes = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('Erro interno no servidor ao buscar Quizzes!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao buscar Quizzes!'
+            message
         })
     }
 }

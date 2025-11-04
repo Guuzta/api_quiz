@@ -32,7 +32,7 @@ router.get(
 )
 
 router.get(
-    '/users/:id/quizzes',
+    '/users/:userId/quizzes',
     authenticateToken,
     getUserQuizzes
 )

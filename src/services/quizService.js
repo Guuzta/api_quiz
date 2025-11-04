@@ -56,4 +56,33 @@ const getQuizById = async({ quizId }) => {
     return quiz
 }
 
-export default { createQuiz, getQuizById }
+const getUserQuizzes = async(userData, queryParams) => {
+    const { userId } = userData
+    const { category, difficulty } = queryParams
+
+    const filters = Object.fromEntries(
+        Object.entries({
+            createdBy: userId,
+            category,
+            difficulty
+        }).filter(([_, value]) => value !== undefined && value !== null)
+    )
+
+    const isValid = mongoose.Types.ObjectId.isValid(userId)
+
+    if(!isValid) {
+        throw new StatusError('ID do Usuário inválido! [service]', 400)
+    }
+
+    const user = await User.findById(userId)
+
+    if(!user) {
+        throw new StatusError('Usuário não encontrado!', 404)
+    }
+
+    const quizzes = await Quiz.find(filters)
+
+    return quizzes
+}
+
+export default { createQuiz, getQuizById, getUserQuizzes }
