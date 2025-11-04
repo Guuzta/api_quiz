@@ -51,7 +51,7 @@ router.patch(
 )
 
 router.delete(
-    '/quizzes/:id',
+    '/quizzes/:quizId',
     authenticateToken,
     deleteQuiz
 )
