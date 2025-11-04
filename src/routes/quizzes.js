@@ -44,7 +44,7 @@ router.get(
 )
 
 router.patch(
-    '/quizzes/:id',
+    '/quizzes/:quizId',
     authenticateToken,
     validateRequest(updateQuizSchema),
     updateQuiz

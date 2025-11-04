@@ -91,9 +91,26 @@ const getAllQuizzes = async () => {
     return quizzes
 }
 
+const updateQuiz = async ({ quizId }, updates) => {
+    const isValid = mongoose.Types.ObjectId.isValid(quizId)
+
+    if(!isValid) {
+        throw new StatusError('ID do Quiz inválido!', 400)
+    }
+
+    const quiz = await Quiz.findByIdAndUpdate(quizId, updates, { new: true })
+
+    if(!quiz) {
+        throw new StatusError('Quiz não encontrado!', 404)
+    }
+
+    return quiz
+}
+
 export default { 
     createQuiz, 
     getQuizById, 
     getUserQuizzes,
-    getAllQuizzes
+    getAllQuizzes,
+    updateQuiz
 }
