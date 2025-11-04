@@ -26,7 +26,7 @@ router.post(
 )
 
 router.get(
-    '/quizzes/:id',
+    '/quizzes/:quizId',
     authenticateToken,
     getQuizById
 )

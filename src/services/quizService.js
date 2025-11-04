@@ -40,4 +40,20 @@ const createQuiz = async (userData) => {
     return quiz
 }
 
-export default { createQuiz }
+const getQuizById = async({ quizId }) => {
+    const isValid = mongoose.Types.ObjectId.isValid(quizId)
+
+    if(!isValid) {
+        throw new StatusError('ID do Quiz inválido!', 400)
+    }
+
+    const quiz = await Quiz.findById(quizId).populate('questions')
+
+    if(!quiz) {
+        throw new StatusError('Quiz não encontrado!', 404)
+    }
+
+    return quiz
+}
+
+export default { createQuiz, getQuizById }
