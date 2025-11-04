@@ -74,7 +74,7 @@ const getUserQuizzes = async (req, res) => {
 
 const getAllQuizzes = async (req, res) => {
     try {
-        const quizzes = await Quiz.find({})
+        const quizzes = await quizService.getAllQuizzes()
 
         res.status(200).json({
             success: true,
@@ -82,11 +82,14 @@ const getAllQuizzes = async (req, res) => {
             quizzes
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao buscar Quizzes!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(message).json({
             success: false,
-            message: 'Erro interno no servidor ao buscar Quizzes!'
+            message
         })
     }
 }

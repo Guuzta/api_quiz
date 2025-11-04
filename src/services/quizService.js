@@ -85,4 +85,15 @@ const getUserQuizzes = async(userData, queryParams) => {
     return quizzes
 }
 
-export default { createQuiz, getQuizById, getUserQuizzes }
+const getAllQuizzes = async () => {
+    const quizzes = await Quiz.find({})
+
+    return quizzes
+}
+
+export default { 
+    createQuiz, 
+    getQuizById, 
+    getUserQuizzes,
+    getAllQuizzes
+}
