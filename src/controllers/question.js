@@ -1,67 +1,12 @@
 import mongoose from "mongoose"
 
-import User from "../models/User.js"
-import Quiz from "../models/Quiz.js"
 import Question from "../models/Question.js"
 
+import questionService from '../services/questionService.js'
+
 const createQuestion = async (req, res) => {
-    const {
-        quizId,
-        text,
-        category,
-        difficulty,
-        options,
-        correctAnswer,
-        source,
-        createdBy
-    } = req.body
-
     try {
-
-        const user = await User.findById(createdBy)
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuário não encontrado!'
-            })
-        }
-
-        const isValid = mongoose.Types.ObjectId.isValid(quizId)
-
-        if (!isValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID do Quiz inválido!'
-            })
-        }
-
-        const quiz = await Quiz.findById(quizId)
-
-        if (!quiz) {
-            return res.status(404).json({
-                success: false,
-                message: 'Quiz não encontrado!'
-            })
-        }
-
-        const question = new Question({
-            quizId,
-            text,
-            category,
-            difficulty,
-            options,
-            correctAnswer,
-            source,
-            createdBy
-        })
-
-        await Quiz.findByIdAndUpdate(
-            quizId,
-            { $push: { questions: question._id } }
-        )
-
-        await question.save()
+        const question = await questionService.createQuestion(req.body)
 
         res.status(201).json({
             success: true,
@@ -69,15 +14,16 @@ const createQuestion = async (req, res) => {
             question
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao criar questão!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao criar questão!'
+            message
         })
     }
-
-
 }
 
 const getQuestionById = async (req, res) => {
