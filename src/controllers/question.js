@@ -49,30 +49,8 @@ const getQuestionById = async (req, res) => {
 }
 
 const updateQuestion = async (req, res) => {
-    const { id } = req.params
-    const updates = req.updates
-
     try {
-        const isValid = mongoose.Types.ObjectId.isValid(id)
-
-        if(!isValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID da Questão inválida!'
-            })
-        }
-
-        const question = await Question.findById(id)
-
-        if(!question) {
-            return res.status(404).json({
-                success: false,
-                message: 'Questão não encontrada!'
-            })
-        }
-
-        Object.assign(question, updates)
-        const updatedQuestion = await question.save()
+        const updatedQuestion = await questionService.updateQuestion(req.params, req.user.sub, req.updates)
 
         res.status(200).json({
             success: true,
@@ -80,11 +58,14 @@ const updateQuestion = async (req, res) => {
             updatedQuestion
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao atualizar questão!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message  = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao atualizar questão!'
+            message
         })
     }
 }

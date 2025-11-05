@@ -83,7 +83,33 @@ const getQuestionById = async ({ questionId }, userId) => {
     return question
 }
 
+const updateQuestion = async ({ questionId }, userId, updates) => {
+    const isValid = mongoose.Types.ObjectId.isValid(questionId)
+
+    if(!isValid) {
+        throw new StatusError('ID da Questão inválida!', 400)
+    }
+
+    const question = await Question.findById(questionId)
+
+    if(!question) {
+        throw new StatusError('Questão não encontrada!', 404)
+    }
+
+    const isOwner = question.createdBy.toString() === userId
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para atualizar essa questão!', 403)
+    }
+
+    Object.assign(question, updates)
+    const updatedQuestion = await question.save()
+
+    return updatedQuestion
+}
+
 export default {
     createQuestion,
-    getQuestionById
+    getQuestionById,
+    updateQuestion
 }
