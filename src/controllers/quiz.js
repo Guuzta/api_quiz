@@ -139,104 +139,26 @@ const deleteQuiz = async (req, res) => {
 }
 
 const startQuiz = async (req, res) => {
-    const { quizId } = req.params
-    const userId = req.user.sub
-
     try {
-        await Attempt.updateMany(
-            {userId, status: 'in_progress'},
-            {
-                $set: {
-                    status: 'abandoned',
-                    finishedAt: Date.now(),
-                    abandonedReason: 'new_start'
-                }
-            }
-        )
-
-        const isValid = mongoose.Types.ObjectId.isValid(quizId)
-
-        if(!isValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID do Quiz inválido!'
-            })
-        }
-
-        const quiz = await Quiz.findById(quizId).populate('questions')
-
-        if(!quiz) {
-            return res.status(404).json({
-                success: false,
-                message: 'Quiz não encontrado!'
-            })
-        }
-        
-        const existingAttempt = await Attempt.findOne({
-            userId,
-            quizId,
-            status: 'in_progress'
-        })
-
-        if(existingAttempt) {
-            return res.status(400).json({
-                success: false,
-                message: 'Esse Quiz já possui uma tentativa em andamento!',
-                attemptId: existingAttempt._id
-            })
-        }
-
-        const questionSnapshots = quiz.questions.map(question => {
-            const shuffledOrder = question.options
-            .map((option, index) => ({ option, index }))
-            .sort(() => Math.random() - 0.5)
-            .map(object => object.index)
-
-            return {
-                questionId: question._id,
-                text: question.text,
-                options: question.options,
-                correctAnswer: question.correctAnswer,
-                shuffledOrder
-            }
-        })
-
-        const attempt = await Attempt.create({
-            userId,
-            quizId,
-            quizSnapshot: {
-                title: quiz.title,
-                questionCount: quiz.questions.length
-            },
-            questions: questionSnapshots,
-            answers: [],
-            score: 0,
-            totalPossibleScore: quiz.questions.length * 10,
-            percentage: 0,
-            startedAt: new Date(),
-            status: 'in_progress'
-        })
-
-        const safeQuestions = questionSnapshots.map(question => ({
-            questionId: question.questionId,
-            text: question.text,
-            options: question.shuffledOrder.map(index => question.options[index])
-        }))
+        const { attemptId, quizSnapshot, questions } = await quizService.startQuiz(req.params, req.user.sub)
 
         res.status(201).json({
             success: true,
             message: 'Nova tentativa criada com sucesso!',
-            attemptId: attempt._id,
-            quizSnapshot: attempt.quizSnapshot,
-            questions: safeQuestions
+            attemptId,
+            quizSnapshot,
+            questions
         })
         
     } catch (error) {
-        console.log('Erro interno no servidor ao iniciar Quiz!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao iniciar Quiz!'
+            message
         })
     }
 }
