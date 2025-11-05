@@ -20,25 +20,25 @@ const createQuestion = async (questionData) => {
 
     let isValid = mongoose.Types.ObjectId.isValid(createdBy)
 
-    if(!isValid) {
+    if (!isValid) {
         throw new StatusError('ID do Usuário inválido!', 400)
     }
 
     const user = await User.findById(createdBy)
 
-    if(!user) {
+    if (!user) {
         throw new StatusError('Usuário não encontrado!', 404)
     }
 
     isValid = mongoose.Types.ObjectId.isValid(quizId)
 
-    if(!isValid) {
+    if (!isValid) {
         throw new StatusError('ID do Quiz inválido!', 400)
     }
 
     const quiz = await Quiz.findById(quizId)
 
-    if(!quiz) {
+    if (!quiz) {
         throw new StatusError('Quiz não encontrado!', 404)
     }
 
@@ -64,19 +64,19 @@ const createQuestion = async (questionData) => {
 const getQuestionById = async ({ questionId }, userId) => {
     const isValid = mongoose.Types.ObjectId.isValid(questionId)
 
-    if(!isValid) {
+    if (!isValid) {
         throw new StatusError('ID da Questão inválida!', 400)
     }
 
     const question = await Question.findById(questionId)
 
-    if(!question) {
+    if (!question) {
         throw new StatusError('Questão não encontrada!', 404)
     }
 
     const isOwner = question.createdBy.toString() === userId
 
-    if(!isOwner) {
+    if (!isOwner) {
         throw new StatusError('Você não tem permissão para acessar essa questão!', 403)
     }
 
@@ -86,19 +86,19 @@ const getQuestionById = async ({ questionId }, userId) => {
 const updateQuestion = async ({ questionId }, userId, updates) => {
     const isValid = mongoose.Types.ObjectId.isValid(questionId)
 
-    if(!isValid) {
+    if (!isValid) {
         throw new StatusError('ID da Questão inválida!', 400)
     }
 
     const question = await Question.findById(questionId)
 
-    if(!question) {
+    if (!question) {
         throw new StatusError('Questão não encontrada!', 404)
     }
 
     const isOwner = question.createdBy.toString() === userId
 
-    if(!isOwner) {
+    if (!isOwner) {
         throw new StatusError('Você não tem permissão para atualizar essa questão!', 403)
     }
 
@@ -108,8 +108,36 @@ const updateQuestion = async ({ questionId }, userId, updates) => {
     return updatedQuestion
 }
 
+const deleteQuestion = async ({ questionId }, userId) => {
+    const isValid = mongoose.Types.ObjectId.isValid(questionId)
+
+    if (!isValid) {
+        throw new StatusError('ID da Questão inválida!', 400)
+    }
+
+    const question = await Question.findById(questionId)
+
+    if (!question) {
+        throw new StatusError('Questão não encontrada!', 404)
+    }
+
+    const isOwner = question.createdBy.toString() === userId
+
+    if (!isOwner) {
+        throw new StatusError('Você não tem permissão para deletar essa questão!', 403)
+    }
+
+    await question.deleteOne()
+
+    await Quiz.findByIdAndUpdate(
+        question.quizId,
+        { $pull: { questions: questionId } }
+    )
+}
+
 export default {
     createQuestion,
     getQuestionById,
-    updateQuestion
+    updateQuestion,
+    deleteQuestion
 }

@@ -36,7 +36,7 @@ router.patch(
 )
 
 router.delete(
-    '/questions/:id',
+    '/questions/:questionId',
     authenticateToken,
     deleteQuestion
 )
