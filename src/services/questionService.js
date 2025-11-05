@@ -61,6 +61,29 @@ const createQuestion = async (questionData) => {
     return question
 }
 
+const getQuestionById = async ({ questionId }, userId) => {
+    const isValid = mongoose.Types.ObjectId.isValid(questionId)
+
+    if(!isValid) {
+        throw new StatusError('ID da Questão inválida!', 400)
+    }
+
+    const question = await Question.findById(questionId)
+
+    if(!question) {
+        throw new StatusError('Questão não encontrada!', 404)
+    }
+
+    const isOwner = question.createdBy.toString() === userId
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para acessar essa questão!', 403)
+    }
+
+    return question
+}
+
 export default {
-    createQuestion
+    createQuestion,
+    getQuestionById
 }

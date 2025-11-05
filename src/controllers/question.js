@@ -27,26 +27,8 @@ const createQuestion = async (req, res) => {
 }
 
 const getQuestionById = async (req, res) => {
-    const { id } = req.params
-
     try {
-        const isValid = mongoose.Types.ObjectId.isValid(id)
-
-        if (!isValid) {
-            return res.status(400).json({
-                success: false,
-                message: 'ID da Questão inválida!'
-            })
-        }
-
-        const question = await Question.findById(id)
-
-        if (!question) {
-            return res.status(404).json({
-                success: false,
-                message: 'Questão não encontrada!'
-            })
-        }
+        const question = await questionService.getQuestionById(req.params, req.user.sub)
 
         res.status(200).json({
             success: true,
@@ -54,11 +36,14 @@ const getQuestionById = async (req, res) => {
             question
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao buscar questão!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao buscar questão!'
+            message
         })
     }
 }

@@ -23,7 +23,7 @@ router.post(
 )
 
 router.get(
-    '/questions/:id',
+    '/questions/:questionId',
     authenticateToken,
     getQuestionById
 )
