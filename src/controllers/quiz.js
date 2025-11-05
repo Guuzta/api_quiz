@@ -72,7 +72,7 @@ const getUserQuizzes = async (req, res) => {
     }
 }
 
-const getAllQuizzes = async (req, res) => {
+const getAllQuizzes = async (_, res) => {
     try {
         const quizzes = await quizService.getAllQuizzes()
 
@@ -87,7 +87,7 @@ const getAllQuizzes = async (req, res) => {
         const status = error.statusCode || 500
         const message = error.message
 
-        res.status(message).json({
+        res.status(status).json({
             success: false,
             message
         })
