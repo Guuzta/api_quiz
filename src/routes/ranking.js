@@ -8,6 +8,7 @@ const router = Router()
 
 router.get(
     '/ranking',
+    authenticateToken,
     listRanking
 )
 

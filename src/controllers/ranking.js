@@ -1,42 +1,8 @@
-import mongoose from "mongoose"
+import rankingService from '../services/rankingService.js'
 
-import Attempt from "../models/Attempt.js"
-
-const listRanking = async (req, res) => {
+const listRanking = async (_, res) => {
     try {
-        const ranking = await Attempt.aggregate([
-            {
-                $group: {
-                    _id: '$userId',
-                    totalPoints: { $sum: '$score' }
-                }
-            },
-
-            {
-                $sort: { totalPoints: -1 }
-            },
-
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'user'
-                }
-            },
-
-            { $unwind: '$user' },
-
-            {
-                $project: {
-                    _id: 0,
-                    userId: '$_id',
-                    name: '$user.name',
-                    totalPoints: 1
-                }
-            }
-            
-        ])
+        const ranking = await rankingService.listRanking()
 
         res.status(200).json({
             success: true,
@@ -44,11 +10,14 @@ const listRanking = async (req, res) => {
             ranking
         })
     } catch (error) {
-        console.log('Erro interno no servidor ao listar ranking!', error)
+        console.log(error)
 
-        res.status(500).json({
+        const status = error.statusCode || 500
+        const message = error.message
+
+        res.status(status).json({
             success: false,
-            message: 'Erro interno no servidor ao listar ranking!'
+            message
         })
     }
 }

@@ -10,6 +10,7 @@ import adminRoutes from './routes/admin.js'
 import questionRoutes from './routes/questions.js'
 import quizRoutes from './routes/quizzes.js'
 import attemptRoutes from './routes/attempts.js'
+import rankingRoutes from './routes/ranking.js'
 
 connectDB()
 startCronJobs()
@@ -22,6 +23,7 @@ app.use('/api/admin', adminRoutes)
 app.use('/api', questionRoutes)
 app.use('/api', quizRoutes)
 app.use('/api', attemptRoutes)
+app.use('/api', rankingRoutes)
 
 const port = process.env.PORT
 app.listen(port, () => console.log(`Servidor executando na porta ${port}...`))
