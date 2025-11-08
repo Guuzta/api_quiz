@@ -71,6 +71,49 @@ const answerAttempt = async ({ attemptId, userId, questionId, selectedIndex }) =
     }
 }
 
+const finishAttempt = async ({ attemptId, userId }) => {
+    const isValid = mongoose.Types.ObjectId.isValid(attemptId)
+
+    if (!isValid) {
+        throw new StatusError('Attempt ID inválido!', 400)
+    }
+
+    const attempt = await Attempt.findById(attemptId)
+
+    if (!attempt) {
+        throw new StatusError('Attempt não encontrado!', 404)
+    }
+
+    const isOwner = attempt.userId.toString() === userId
+
+    if (!isOwner) {
+        throw new StatusError('Você não tem permissão para acessar Attempt!', 403)
+    }
+
+    const attemptIsFinished = attempt.status !== 'in_progress' 
+
+    if (attemptIsFinished) {
+        throw new StatusError('Esse Attempt não está mais disponível! A tentativa já foi finalizada!', 403)
+    }
+
+    attempt.status = 'finished'
+    attempt.percentage = attempt.score / attempt.totalPossibleScore * 100
+    attempt.finishedAt = Date.now()
+
+    await attempt.save()
+
+    const attemptInfo = {
+        attemptId,
+        score: attempt.score,
+        totalPossibleScore: attempt.totalPossibleScore,
+        percentage: attempt.percentage,
+        answers: attempt.answers
+    }
+
+    return attemptInfo
+}
+
 export default {
-    answerAttempt
+    answerAttempt,
+    finishAttempt
 }
