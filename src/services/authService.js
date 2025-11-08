@@ -12,14 +12,6 @@ import generateRefreshToken from "../utils/tokens/refreshToken.js"
 import StatusError from "../utils/StatusError.js"
 
 const registerUser = async (userData) => {
-    try {
-        await registerUserSchema.validate(userData, { abortEarly: false })
-    } catch (error) {
-        const { errors } = error
-
-        throw new StatusError(errors.join(', '), 400)
-    }
-
     const {
         name,
         email,
@@ -53,14 +45,6 @@ const registerUser = async (userData) => {
 }
 
 const loginUser = async (userData) => {
-    try {
-        await loginUserSchema.validate(userData, { abortEarly: false })
-    } catch (error) {
-        const { errors } = error
-
-        throw new StatusError(errors.join(', '), 400)
-    }
-
     const { email, password } = userData
 
     const user = await User.findOne({ email })

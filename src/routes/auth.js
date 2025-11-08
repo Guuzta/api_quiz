@@ -7,26 +7,33 @@ import {
     logoutUser
 } from '../controllers/auth.js'
 
-import authenticateToken from '../middleware/authenticateToken.js'
+import validateRequest from '../middleware/validateRequest.js'
+
+import registerUserSchema from '../validations/register.js'
+import loginUserSchema from '../validations/login.js'
 
 const router = Router()
 
-router.post('/register', registerUser)
+router.post(
+    '/register',
+    validateRequest(registerUserSchema), 
+    registerUser
+)
 
-router.post('/login', loginUser)
+router.post(
+    '/login', 
+    validateRequest(loginUserSchema),
+    loginUser
+)
 
-router.post('/refresh', refreshUser)
+router.post(
+    '/refresh', 
+    refreshUser
+)
 
-router.post('/logout', logoutUser)
-
-router.get('/dashboard', authenticateToken, (req, res) => {
-
-    const user = req.user
-
-    res.json({
-        message: 'Acesso autorizado na rota protegida!',
-        user
-    })
-})
+router.post(
+    '/logout', 
+    logoutUser
+)
 
 export default router
