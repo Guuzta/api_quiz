@@ -1,8 +1,8 @@
-import auth from '../services/auth.js'
+import authService from '../services/authService.js'
 
 const registerUser = async (req, res) => {
     try {
-        await auth.registerUser(req.body)
+        await authService.registerUser(req.body)
 
         res.status(201).json({
             success: true,
@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { user, accessToken, refreshToken } = await auth.loginUser(req.body)
+        const { user, accessToken, refreshToken } = await authService.loginUser(req.body)
 
         return res.status(200).json({
             success: true,
@@ -56,7 +56,7 @@ const loginUser = async (req, res) => {
 
 const refreshUser = async (req, res) => {
     try {
-        const { accessToken, newRefreshToken } = await auth.refreshUser(req.body)
+        const { accessToken, newRefreshToken } = await authService.refreshUser(req.body)
 
         return res.status(200).json({
             success: true,
@@ -78,7 +78,7 @@ const refreshUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
     try {
-        await auth.logoutUser(req.body)
+        await authService.logoutUser(req.body)
 
         res.status(200).json({
             success: true,
