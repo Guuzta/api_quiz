@@ -23,7 +23,7 @@ const answerAttempt = async ({ attemptId, userId, questionId, selectedIndex }) =
         throw new StatusError('Você não tem permissão para acessar esse Attempt!', 403)
     }
 
-    const attemptInProgress = attempt.status === 'in_progress' ? true : false
+    const attemptInProgress = attempt.status === 'in_progress'
 
     if (!attemptInProgress) {
         throw new StatusError('Esse Attempt não está mais disponível! A tentativa já foi finalizada!', 403)
