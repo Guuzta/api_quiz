@@ -1,6 +1,7 @@
 import { Router } from "express"
 
-import { 
+import {
+    startAttempt, 
     answerAttempt, 
     finishAttempt 
 } from "../controllers/attempt.js"
@@ -8,6 +9,12 @@ import {
 import authenticateToken from "../middleware/authenticateToken.js"
 
 const router = Router()
+
+router.post(
+    '/attempts/:quizId/start',
+    authenticateToken,
+    startAttempt
+)
 
 router.post(
     '/attempts/:attemptId/answer',

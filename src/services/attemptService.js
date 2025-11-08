@@ -1,8 +1,77 @@
 import mongoose from "mongoose"
 
 import Attempt from '../models/Attempt.js'
+import Quiz from "../models/Quiz.js"
 
 import StatusError from "../utils/StatusError.js"
+
+const startAttempt = async ({ quizId, userId }) => {
+    await Attempt.updateMany(
+        { userId, status: 'in_progress' },
+        {
+            $set: {
+                status: 'abandoned',
+                finishedAt: Date.now(),
+                abandonedReason: 'new_start'
+            }
+        }
+    )
+
+    const isValid = mongoose.Types.ObjectId.isValid(quizId)
+
+    if (!isValid) {
+        throw new StatusError('ID do Quiz inválido!', 400)
+    }
+
+    const quiz = await Quiz.findById(quizId).populate('questions')
+
+    if (!quiz) {
+        throw new StatusError('Quiz não encontrado!', 404)
+    }
+
+    const questionSnapshots = quiz.questions.map(question => {
+        const shuffledOrder = question.options
+            .map((option, index) => ({ option, index }))
+            .sort(() => Math.random() - 0.5)
+            .map(object => object.index)
+
+        return {
+            questionId: question._id,
+            text: question.text,
+            options: question.options,
+            correctAnswer: question.correctAnswer,
+            shuffledOrder
+        }
+    })
+
+    const attempt = await Attempt.create({
+        userId,
+        quizId,
+        quizSnapshot: {
+            title: quiz.title,
+            questionCount: quiz.questions.length
+        },
+        questions: questionSnapshots,
+        answers: [],
+        score: 0,
+        totalPossibleScore: quiz.questions.length * 10,
+        percentage: 0,
+        startedAt: new Date(),
+        status: 'in_progress'
+    })
+
+    const safeQuestions = questionSnapshots.map(question => ({
+        questionId: question.questionId,
+        text: question.text,
+        options: question.shuffledOrder.map(index => question.options[index])
+    }))
+
+    return { 
+        attemptId: attempt.id, 
+        quizSnapshot: attempt.quizSnapshot,
+        questions: safeQuestions  
+    }
+}
 
 const answerAttempt = async ({ attemptId, userId, questionId, selectedIndex }) => {
     let isValid = mongoose.Types.ObjectId.isValid(attemptId)
@@ -114,6 +183,7 @@ const finishAttempt = async ({ attemptId, userId }) => {
 }
 
 export default {
+    startAttempt,
     answerAttempt,
     finishAttempt
 }

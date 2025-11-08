@@ -1,9 +1,3 @@
-import mongoose from "mongoose"
-
-import User from "../models/User.js"
-import Quiz from "../models/Quiz.js"
-import Attempt from "../models/Attempt.js"
-
 import quizService from '../services/quizService.js'
 
 const createQuiz = async (req, res) => {
@@ -138,31 +132,6 @@ const deleteQuiz = async (req, res) => {
     }
 }
 
-const startQuiz = async (req, res) => {
-    try {
-        const { attemptId, quizSnapshot, questions } = await quizService.startQuiz(req.params, req.user.sub)
-
-        res.status(201).json({
-            success: true,
-            message: 'Nova tentativa criada com sucesso!',
-            attemptId,
-            quizSnapshot,
-            questions
-        })
-        
-    } catch (error) {
-        console.log(error)
-
-        const status = error.statusCode || 500
-        const message = error.message
-
-        res.status(status).json({
-            success: false,
-            message
-        })
-    }
-}
-
 export {
     createQuiz,
     getQuizById,
@@ -170,5 +139,4 @@ export {
     getAllQuizzes,
     updateQuiz,
     deleteQuiz,
-    startQuiz
 }
