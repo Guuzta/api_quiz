@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
+import helmet from 'helmet'
 
 import connectDB from './config/database.js'
 
@@ -17,6 +18,8 @@ startCronJobs()
 
 const app = express()
 app.use(express.json())
+
+app.use(helmet())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
