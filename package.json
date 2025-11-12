@@ -1,9 +1,10 @@
 {
   "name": "api_quiz",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
+    "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.0",
     "node-cron": "^4.2.1",
+    "swagger-ui-express": "^5.0.1",
     "yup": "^1.7.1"
   }
 }

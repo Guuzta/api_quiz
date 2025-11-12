@@ -1,7 +1,12 @@
 import 'dotenv/config'
+import { createRequire } from "module"
 import express from 'express'
+import swaggerUi from 'swagger-ui-express'
 import helmet from 'helmet'
 import cors from 'cors'
+
+const require = createRequire(import.meta.url);
+const swaggerDocs = require('./docs/swagger.json')
 
 import connectDB from './config/database.js'
 
@@ -23,6 +28,7 @@ app.use(express.json())
 app.use(helmet())
 app.use(cors())
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api', questionRoutes)
