@@ -1,16 +1,415 @@
 {
     "openapi": "3.0.0",
-
     "info": {
         "title": "API Quiz - Documentação",
         "version": "1.0.0",
         "description": "Estrutura inicial da documentação da API"
     },
-
     "servers": [
         {
             "url": "http://localhost:3000/api",
             "description": "Servidor local"
+        },
+        {
+            "url": "https://api-quiz-lt7z.onrender.com/api",
+            "description": "Servidor em produção"
         }
-    ]
+    ],
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Rotas de autenticação do usuário"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cadastrar um novo usuário",
+                "description": "Realiza o cadastro de um novo usuário",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/registerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário cadastrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/registerResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Não foi possível cadastrar o usuário"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/registerErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login de um usuário",
+                "description": "Realiza a autenticação de um usuário com email e senha e retorna tokens JWT",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/loginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/loginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Não foi possível cadastrar o usuário"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/loginErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Gera um novo accessToken",
+                "description": "Verifica o refreshToken gerado no momento do login do Usuário. Caso o refreshToken sejá valido um novo accessToken e refreshToken são gerados, desse modo o usuário tem permissão para continuar acessando as rotas privadas. Se o refreshToken fornecido estiver inválido, expirado ou ausente o usuário deverá realizar Login novamente.",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/refreshRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operação realizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/refreshResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "refreshToken não fornecido"
+                    },
+                    "403": {
+                        "description": "refreshToken inválido"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Revoga o refreshToken",
+                "description": "O refreshToken é invalidado, e o usuário não poderá mais acessar as rotas privadas.",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/logoutRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operação realizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/logoutResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "refreshToken não fornecido"
+                    },
+                    "403": {
+                        "description": "refreshToken inválido"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "registerRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Usuario"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "Usuario@exemplo.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                }
+            },
+            "registerResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Usuário cadastrado com sucesso!"
+                    }
+                }
+            },
+            "registerErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errors": {
+                        "type": "array",
+                        "example": [
+                            "Campo nome é obrigatório!",
+                            "O nome precisa ter pelo menos 4 caracteres!",
+                            "Campo email é obrigatório!",
+                            "Formato de email inválido!",
+                            "Formato de senha inválido!",
+                            "A senha precisa ter pelo menos 6 caracteres!"
+                        ]
+                    }
+                }
+            },
+            "unexpectedError": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "loginRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "Usuario@exemplo.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                }
+            },
+            "loginResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Login realizado com sucesso!!"
+                    },
+                    "accessToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2MzE0NzY4OSwiZXhwIjoxNzYzMTQ4NTg5LCJpc3MiOiJxdWl6LWFwaS1hdXRoIn0.jWgNQZieMq3aKPPiVlFNXUPoNuEUTILfOySrD1z0Hgk"
+                    },
+                    "refreshToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJpYXQiOjE3NjMxNDc2ODksImV4cCI6MTc2Mzc1MjQ4OSwiaXNzIjoicXVpei1hcGktYXV0aCJ9.sb5zh4gZrmUk2M9_65reEVoeglf5XE8z8Gt7SImf3mk"
+                    },
+                    "user": {
+                        "type": "object",
+                        "example": {
+                            "name": "Usuario",
+                            "email": "Usuario@exemplo.com",
+                            "role": "user"
+                        }
+                    }
+                }
+            },
+            "loginErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errors": {
+                        "type": "array",
+                        "example": [
+                            "Campo email é obrigatório!",
+                            "Formato de email inválido!",
+                            "Campo senha é obrigatório!",
+                            "A senha precisa ter pelo menos 6 caracteres!"
+                        ]
+                    }
+                }
+            },
+            "refreshRequest": {
+                "type": "object",
+                "required": "refreshToken",
+                "properties": {
+                    "refreshToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJpYXQiOjE3NjMxNDc2ODksImV4cCI6MTc2Mzc1MjQ4OSwiaXNzIjoicXVpei1hcGktYXV0aCJ9.sb5zh4gZrmUk2M9_65reEVoeglf5XE8z8Gt7SImf3mk"
+                    }
+                }
+            },
+            "refreshResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "accessToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2MzE1MDI5OSwiZXhwIjoxNzYzMTUxMTk5LCJpc3MiOiJxdWl6LWFwaS1hdXRoIn0.Y0W1tXQeR2s9htws4zny-pm6kGB9OY8fp02Rc0WX8QU"
+                    },
+                    "newRefreshToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJpYXQiOjE3NjMxNTAyOTksImV4cCI6MTc2Mzc1NTA5OSwiaXNzIjoicXVpei1hcGktYXV0aCJ9.XNfPI5ey6zhCYhEzhTBLAJXgBzgRGkZrWxurjPPPQbo"
+                    }
+                }
+            },
+            "logoutRequest": {
+                "type": "object",
+                "required": "refreshToken",
+                "properties": {
+                    "refreshToken": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGYyZTRmYzg5NGU4MDk3YTI2ODVlNTEiLCJpYXQiOjE3NjMxNDc2ODksImV4cCI6MTc2Mzc1MjQ4OSwiaXNzIjoicXVpei1hcGktYXV0aCJ9.sb5zh4gZrmUk2M9_65reEVoeglf5XE8z8Gt7SImf3mk"
+                    }
+                }
+            },
+            "logoutResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Logout realizado com sucesso!"
+                    }
+                }
+            }
+        }
+    }
 }
