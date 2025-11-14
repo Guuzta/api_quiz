@@ -2,9 +2,6 @@ import User from "../models/User.js"
 
 import { hashPassword, comparePassword } from "../utils/password.js"
 
-import registerUserSchema from "../validations/register.js"
-import loginUserSchema from "../validations/login.js"
-
 import jwt from 'jsonwebtoken'
 import generateAccessToken from "../utils/tokens/accessToken.js"
 import generateRefreshToken from "../utils/tokens/refreshToken.js"
@@ -74,13 +71,13 @@ const loginUser = async (userData) => {
 
 const refreshUser = async ({ refreshToken }) => {
     if(!refreshToken) {
-        throw new StatusError('Token de atualização não fornecido!', 401)
+        throw new StatusError('refreshToken não fornecido!', 401)
     }
 
     const user = await User.findOne({ refreshToken })
 
     if(!user) {
-        throw new StatusError('Token de atualização inválido!', 401)
+        throw new StatusError('refreshToken inválido!', 403)
     }
 
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
@@ -96,13 +93,13 @@ const refreshUser = async ({ refreshToken }) => {
 
 const logoutUser = async ({ refreshToken }) => {
     if(!refreshToken) {
-        throw new StatusError('Token de atualização não fornecido!', 401)
+        throw new StatusError('refreshToken não fornecido!', 401)
     }
 
     const user = await User.findOne({ refreshToken })
 
     if(!user) {
-        throw new StatusError('Token de atualização inválido!', 403)
+        throw new StatusError('refreshToken inválido!', 403)
     }
 
     user.refreshToken = null
