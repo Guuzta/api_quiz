@@ -17,15 +17,19 @@
     ],
     "tags": [
         {
-            "name": "Auth",
+            "name": "auth",
             "description": "Rotas de autenticação do usuário"
+        },
+        {
+            "name": "quizzes",
+            "description": "Rotas para gerenciamento dos quizzes"
         }
     ],
     "paths": {
         "/auth/register": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "auth"
                 ],
                 "summary": "Cadastrar um novo usuário",
                 "description": "Realiza o cadastro de um novo usuário",
@@ -79,7 +83,7 @@
         "/auth/login": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "auth"
                 ],
                 "summary": "Login de um usuário",
                 "description": "Realiza a autenticação de um usuário com email e senha e retorna tokens JWT",
@@ -133,7 +137,7 @@
         "/auth/refresh": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "auth"
                 ],
                 "summary": "Gera um novo accessToken",
                 "description": "Verifica o refreshToken gerado no momento do login do Usuário. Caso o refreshToken sejá valido um novo accessToken e refreshToken são gerados, desse modo o usuário tem permissão para continuar acessando as rotas privadas. Se o refreshToken fornecido estiver inválido, expirado ou ausente o usuário deverá realizar Login novamente.",
@@ -180,7 +184,7 @@
         "/auth/logout": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "auth"
                 ],
                 "summary": "Revoga o refreshToken",
                 "description": "O refreshToken é invalidado, e o usuário não poderá mais acessar as rotas privadas.",
@@ -210,6 +214,325 @@
                     },
                     "403": {
                         "description": "refreshToken inválido"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/quizzes": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Criar um novo quiz",
+                "description": "Realiza a criação de um novo quiz",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createQuizRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Quiz criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/createQuizResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "ID do Usuário inválido"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Retorna todos os quizzes",
+                "description": "Retorna todos os quizzes existentes",
+                "responses": {
+                    "200": {
+                        "description": "Quizzes encontrados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/getAllQuizzesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/quizzes/{quizId}": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Retorna um quiz pelo ID",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID do Quiz que será retornado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Quiz encontrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/getQuizByIdResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID do Quiz inválido"
+                    },
+                    "404": {
+                        "description": "Quiz não encontrado"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Atualiza informações de um quiz existente",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID do Quiz que será atualizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": "true",
+                    "description": "Campos opcionais, envie somente o que deseja alterar",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateQuizRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz atualizado com sucesso!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/updateQuizResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID do Quiz inválido"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para atualizar o quiz"
+                    },
+                    "404": {
+                        "description": "Quiz não encontrado"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Deletar um quiz pelo ID",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID do Quiz que será deletado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quiz deletado com sucesso!"
+                    },
+                    "400": {
+                        "description": "ID do Quiz inválido"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para deletar o quiz"
+                    },
+                    "404": {
+                        "description": "Quiz não encontrado"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/quizzes": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "Retorna todos os quizzes de um usuário",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID do Usuário que retornará todos os quizzes pertencentes a ele",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Categoria do quiz",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                      {
+                        "name": "difficulty",
+                        "in": "query",
+                        "description": "Dificuldade do quiz",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Quiz encontrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/getQuizByIdResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID do Usuário inválido"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para acessar os quizzes"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
                     },
                     "default": {
                         "description": "Erro inesperado",
@@ -335,6 +658,7 @@
                     "user": {
                         "type": "object",
                         "example": {
+                            "userId": "69168ecf5885c38aba875813",
                             "name": "Usuario",
                             "email": "Usuario@exemplo.com",
                             "role": "user"
@@ -409,6 +733,208 @@
                         "example": "Logout realizado com sucesso!"
                     }
                 }
+            },
+            "createQuizRequest": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "description",
+                    "category",
+                    "difficulty",
+                    "questions",
+                    "createdBy"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Exemplo de um título"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Aqui você coloca a descrição do seu Quiz"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Exemplo"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "enum": [
+                            "fácil",
+                            "médio",
+                            "difícil"
+                        ],
+                        "example": "fácil"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "example": "69168ecf5885c38aba875813"
+                    }
+                }
+            },
+            "createQuizResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Quiz criado com sucesso!"
+                    },
+                    "quiz": {
+                        "type": "object",
+                        "example": {
+                            "title": "Exemplo de um título",
+                            "description": "Aqui você coloca a descrição do seu Quiz",
+                            "category": "Exemplo",
+                            "difficulty": "facíl",
+                            "questions": [],
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "_id": "691a7e9ce964fc7ddfab63f2",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
+                        }
+                    }
+                }
+            },
+            "getQuizByIdResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Quiz encontrado com sucesso!"
+                    },
+                    "quiz": {
+                        "type": "object",
+                        "example": {
+                            "_id": "691a83e99fd5d07f0a77e525",
+                            "title": "Exemplo de um título",
+                            "description": "Aqui você coloca a descrição do seu Quiz",
+                            "category": "Exemplo",
+                            "difficulty": "facíl",
+                            "questions": [
+                                {
+                                    "_id": "691b22b591a4248f237173bf",
+                                    "quizId": "691a83e99fd5d07f0a77e525",
+                                    "text": "Qual fruta é amarela?",
+                                    "category": "Frutas",
+                                    "difficulty": "fácil",
+                                    "options": [
+                                        "Laranja",
+                                        "Uva",
+                                        "Banana"
+                                    ],
+                                    "correctAnswer": 2,
+                                    "source": "manual",
+                                    "createdBy": "69168ecf5885c38aba875813",
+                                    "createdAt": "2025-11-17T13:27:17.318Z",
+                                    "updatedAt": "2025-11-17T13:27:17.318Z",
+                                    "__v": 0
+                                }
+                            ],
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
+                        }
+                    }
+                }
+            },
+            "getAllQuizzesResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Quizzes encontrados com sucesso!"
+                    },
+                    "quizzes": {
+                        "type": "object",
+                        "example": {
+                            "_id": "691a83e99fd5d07f0a77e525",
+                            "title": "Exemplo de um título",
+                            "description": "Aqui você coloca a descrição do seu Quiz",
+                            "category": "Exemplo",
+                            "difficulty": "fácil",
+                            "questions": [
+                                "691b22b591a4248f237173bf",
+                                "68f1544a9e3823e04baa2d38",
+                                "690bbe80fb3fffe11dd8564b"
+                            ],
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
+                        }
+                    }
+                }
+            },
+            "updateQuizRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Novo título do quiz"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descrição atualizada"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Nova categoria"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "enum": [
+                            "fácil",
+                            "médio",
+                            "difícil"
+                        ],
+                        "example": "médio"
+                    }
+                }
+            },
+            "updateQuizResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Quiz atualizado com sucesso!"
+                    },
+                    "updatedQuiz": {
+                        "type": "object",
+                        "example": {
+                            "_id": "691a83e99fd5d07f0a77e525",
+                            "title": "Novo título do quiz",
+                            "description": "Descrição atualizada",
+                            "category": "Nova categoria",
+                            "difficulty": "médio",
+                            "updatedAt": "2025-11-17T01:47:08.973Z"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }
