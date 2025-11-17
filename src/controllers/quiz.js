@@ -45,8 +45,17 @@ const getQuizById = async (req, res) => {
 }
 
 const getUserQuizzes = async (req, res) => {
+    const { userId } = req.params
+    const currentUser = req.user.sub
+    const { category, difficulty } = req.query
+
     try {
-        const quizzes = await quizService.getUserQuizzes(req.params, req.query)
+        const quizzes = await quizService.getUserQuizzes({
+            userId,
+            currentUser,
+            category,
+            difficulty
+        })
 
         res.status(200).json({
             success: true,

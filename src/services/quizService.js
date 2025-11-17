@@ -55,10 +55,7 @@ const getQuizById = async ({ quizId }) => {
     return quiz
 }
 
-const getUserQuizzes = async (userData, queryParams) => {
-    const { userId } = userData
-    const { category, difficulty } = queryParams
-
+const getUserQuizzes = async ({userId, currentUser, category, difficulty}) => {
     const filters = Object.fromEntries(
         Object.entries({
             createdBy: userId,
@@ -70,13 +67,19 @@ const getUserQuizzes = async (userData, queryParams) => {
     const isValid = mongoose.Types.ObjectId.isValid(userId)
 
     if (!isValid) {
-        throw new StatusError('ID do Usuário inválido! [service]', 400)
+        throw new StatusError('ID do Usuário inválido!', 400)
     }
 
     const user = await User.findById(userId)
 
     if (!user) {
         throw new StatusError('Usuário não encontrado!', 404)
+    }
+
+    const isOwner = currentUser === userId
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para acessar os quizzes desse usuário!', 403)
     }
 
     const quizzes = await Quiz.find(filters)
