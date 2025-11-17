@@ -9,7 +9,7 @@ const updateQuizSchema = object({
         .min(1, 'O título não pode ser vazio!'),
     descripiton: string()
         .trim()
-        .min(1, 'A descrição pode ser vazia!'),
+        .min(1, 'A descrição não pode ser vazia!'),
     category: string()
         .trim()
         .min(1, 'A categoria não pode ser vazia!'),

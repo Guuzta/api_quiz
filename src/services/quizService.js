@@ -93,7 +93,7 @@ const getAllQuizzes = async () => {
     return quizzes
 }
 
-const updateQuiz = async ({ quizId }, updates) => {
+const updateQuiz = async ({ quizId, currentUser, updates }) => {
     const isValid = mongoose.Types.ObjectId.isValid(quizId)
 
     if (!isValid) {
@@ -106,7 +106,20 @@ const updateQuiz = async ({ quizId }, updates) => {
         throw new StatusError('Quiz não encontrado!', 404)
     }
 
-    return quiz
+    const isOwner = quiz.createdBy.toString() === currentUser
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para atualizar esse quiz!', 403)
+    }
+
+    const updatedQuiz = {
+        title: quiz.title,
+        description: quiz.description,
+        category: quiz.category,
+        updatedAt: quiz.updatedAt
+    }
+
+    return updatedQuiz
 }
 
 const deleteQuiz = async ({ quizId }) => {

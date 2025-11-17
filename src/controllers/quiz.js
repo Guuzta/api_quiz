@@ -98,8 +98,16 @@ const getAllQuizzes = async (_, res) => {
 }
 
 const updateQuiz = async (req, res) => {
+    const { quizId } = req.params
+    const currentUser = req.user.sub
+    const updates = req.updates
+
     try {
-        const updatedQuiz = await quizService.updateQuiz(req.params, req.updates)
+        const updatedQuiz = await quizService.updateQuiz({
+            quizId,
+            currentUser,
+            updates
+        })
 
         res.status(200).json({
             success: true,
