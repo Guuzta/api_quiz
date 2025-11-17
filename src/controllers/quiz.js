@@ -129,8 +129,11 @@ const updateQuiz = async (req, res) => {
 }
 
 const deleteQuiz = async (req, res) => {
+    const { quizId } = req.params
+    const currentUser = req.user.sub
+
     try {
-        await quizService.deleteQuiz(req.params)
+        await quizService.deleteQuiz({ quizId, currentUser })
 
         res.status(200).json({
             success: true,

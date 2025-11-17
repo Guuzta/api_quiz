@@ -122,18 +122,26 @@ const updateQuiz = async ({ quizId, currentUser, updates }) => {
     return updatedQuiz
 }
 
-const deleteQuiz = async ({ quizId }) => {
+const deleteQuiz = async ({ quizId, currentUser }) => {
     const isValid = mongoose.Types.ObjectId.isValid(quizId)
 
     if (!isValid) {
         throw new StatusError('ID do Quiz inválido!', 400)
     }
 
-    const quiz = await Quiz.findByIdAndDelete(quizId)
+    const quiz = await Quiz.findById(quizId)
 
     if (!quiz) {
         throw new StatusError('Quiz não encontrado!', 404)
     }
+
+    const isOwner = quiz.createdBy.toString() === currentUser
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para deletar esse quiz!', 403)
+    }
+
+    await quiz.deleteOne()
 }
 
 export default {
