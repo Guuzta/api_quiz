@@ -1,12 +1,31 @@
-import mongoose from "mongoose"
-
-import Question from "../models/Question.js"
-
 import questionService from '../services/questionService.js'
 
 const createQuestion = async (req, res) => {
+    const currentUser = req.user.sub
+
+    const {
+        quizId,
+        text,
+        category,
+        difficulty,
+        options,
+        correctAnswer,
+        source,
+        createdBy
+    } = req.body
+
     try {
-        const question = await questionService.createQuestion(req.body)
+        const question = await questionService.createQuestion({
+            currentUser,
+            quizId,
+            text,
+            category,
+            difficulty,
+            options,
+            correctAnswer,
+            source,
+            createdBy
+        })
 
         res.status(201).json({
             success: true,
@@ -61,7 +80,7 @@ const updateQuestion = async (req, res) => {
         console.log(error)
 
         const status = error.statusCode || 500
-        const message  = error.message
+        const message = error.message
 
         res.status(status).json({
             success: false,

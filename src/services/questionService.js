@@ -6,18 +6,17 @@ import Question from '../models/Question.js'
 
 import StatusError from '../utils/StatusError.js'
 
-const createQuestion = async (questionData) => {
-    const {
-        quizId,
-        text,
-        category,
-        difficulty,
-        options,
-        correctAnswer,
-        source,
-        createdBy
-    } = questionData
-
+const createQuestion = async ({
+    currentUser,
+    quizId,
+    text,
+    category,
+    difficulty,
+    options,
+    correctAnswer,
+    source,
+    createdBy
+}) => {
     let isValid = mongoose.Types.ObjectId.isValid(createdBy)
 
     if (!isValid) {
@@ -40,6 +39,12 @@ const createQuestion = async (questionData) => {
 
     if (!quiz) {
         throw new StatusError('Quiz não encontrado!', 404)
+    }
+
+    const isOwner = quiz.createdBy.toString() === currentUser
+
+    if(!isOwner) {
+        throw new StatusError('Você não tem permissão para criar uma questão para esse quiz!', 403)
     }
 
     const question = await Question.create({
