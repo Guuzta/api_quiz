@@ -23,6 +23,10 @@
         {
             "name": "quizzes",
             "description": "Rotas para gerenciamento dos quizzes"
+        },
+        {
+            "name": "questions",
+            "description": "Rota para gerenciamento das questões"
         }
     ],
     "paths": {
@@ -546,6 +550,280 @@
                     }
                 }
             }
+        },
+        "/questions": {
+             "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "Criar um nova questão",
+                "description": "Realiza a criação de uma nova questão e adiciona a um quiz já existente",
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/createQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Questão criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/createQuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erros possíveis de validação",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "userIdInvalido": {
+                                        "summary": "ID do usuário inválido",
+                                        "description": "O ID fornecido do usuário não está em um formato válido",
+                                        "value": {
+                                            "success": false,
+                                            "message": "ID do usuário inválido!"
+                                        }
+                                    },
+                                    "quizIdInvalido": {
+                                        "summary": "ID do quiz inválido",
+                                        "description": "O ID fornecido do quiz não está em um formato válido",
+                                        "value": {
+                                            "success": false,
+                                            "message": "ID do Quiz inválido!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/questionErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para criar questão para o quiz"
+                    },
+                    "404": {
+                        "description": "Erros possíveis de informação não encontrada",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "userNotFound": {
+                                        "summary": "Usuário não encontrado",
+                                        "description": "O usuário informado não existe",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Usuário não encontrado!"
+                                        }
+                                    },
+                                    "quizNotFound": {
+                                        "summary": "Quiz não encontrado",
+                                        "description": "O quiz informado não existe",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Quiz não encontrado!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/questions/{questionId}": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "Retorna uma questão pelo ID",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "description": "ID da Questão que será retornada",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Questão encontrada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/getQuestionByIdResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID da Questão inválida"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para acessar a questão"
+                    },
+                    "404": {
+                        "description": "Questão não encontrada"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "Atualiza informações de uma questão existente",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "description": "ID da Questão que será atualizada",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }   
+                ],
+                "requestBody": {
+                    "required": "true",
+                    "description": "Campos opcionais, envie somente o que deseja alterar",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/updateQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Questão atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/updateQuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID da Questão inválida"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para atualizar a questão"
+                    },
+                    "404": {
+                        "description": "Questão não encontrada"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "summary": "Deletar uma questão pelo ID",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "description": "ID da Questão que será deletada",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questão deletada com sucesso!"
+                    },
+                    "400": {
+                        "description": "ID da Questão inválida"
+                    },
+                    "403": {
+                        "description": "Usuário sem permissão para deletar a questão"
+                    },
+                    "404": {
+                        "description": "Questão não encontrada"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -925,6 +1203,205 @@
                             "category": "Nova categoria",
                             "difficulty": "médio",
                             "updatedAt": "2025-11-17T01:47:08.973Z"
+                        }
+                    }
+                }
+            },
+            "createQuestionRequest": {
+                "type": "object",
+                "required": [
+                    "quizId",
+                    "text",
+                    "category",
+                    "difficulty",
+                    "options",
+                    "correctAnswer",
+                    "createdBy"
+                ],
+                "properties": {
+                    "quizId": {
+                        "type": "string",
+                        "example": "691a83e99fd5d07f0a77e525"
+                    },
+                    "text": {
+                        "type": "string",
+                        "example": "Aqui você coloca o texto da sua pergunta"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Exemplo"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "enum": [
+                            "fácil",
+                            "médio",
+                            "difícil"
+                        ],
+                        "example": "fácil"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["Opção um", "Opção dois", "Opção três"]
+                    },
+                    "correctAnswer": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "example": "69168ecf5885c38aba875813"
+                    }
+                }
+            },
+            "createQuestionResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Questão criada com sucesso!"
+                    },
+                    "question": {
+                        "type": "object",
+                        "example": {
+                            "quizId": "691a83e99fd5d07f0a77e525",
+                            "text": "Aqui você coloca o texto da sua pergunta",
+                            "category": "Exemplo",
+                            "difficulty": "facíl",
+                            "options": [
+                                "Opção um",
+                                "Opção dois",
+                                "Opção três"
+                            ],
+                            "correctAnswer": 2,
+                            "source": "manual",
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "_id": "691a7e9ce964fc7ddfab63f2",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
+                        }
+                    }
+                }
+            },
+            "questionErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errors": {
+                        "type": "array",
+                        "example": [
+                            "O campo quizId é obrigatório!",
+                            "Campo texto é obrigatório!",
+                            "Campo dificuldade é obrigatório!",
+                            "Campo opções é obrigatório!",
+                            "O índice da resposta deve ser um número inteiro!",
+                            "O índice da resposta correta não pode um número negativo!",
+                            "O campo createdBy é obrigatório!"
+                        ]
+                    }
+                }
+            },
+            "getQuestionByIdResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Questão encontrada com sucesso!"
+                    },
+                    "question": {
+                        "type": "object",
+                        "example": {
+                            "_id": "691a83e99fd5d07f0a77e525",
+                            "quizId": "691d037440808a23015ab954",
+                            "text": "Aqui você coloca o texto da sua pergunta",
+                            "category": "Exemplo",
+                            "difficulty": "fácil",
+                            "options": [
+                                "Opção um",
+                                "Opção dois",
+                                "Opção três"
+                            ],
+                            "correctAnswer": 2,
+                            "source": "manual",
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
+                        }
+                    }
+                }
+            },
+            "updateQuestionRequest": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "example": "Novo texto da questão"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Nova categoria"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "enum": [
+                            "fácil",
+                            "médio",
+                            "difícil"
+                        ],
+                        "example": "médio"
+                    },
+                    "correctAnswer": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "updateQuestionResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Questão atualizada com sucesso!"
+                    },
+                    "updatedQuestion": {
+                        "type": "object",
+                        "example": {
+                            "_id": "691a83e99fd5d07f0a77e525",
+                            "quizId": "691d037440808a23015ab954",
+                            "text": "Aqui você coloca o texto da sua pergunta",
+                            "category": "Nova categoria",
+                            "difficulty": "médio",
+                            "options": [
+                                "Opção um",
+                                "Opção dois",
+                                "Opção três"
+                            ],
+                            "correctAnswer": 1,
+                            "source": "manual",
+                            "createdBy": "69168ecf5885c38aba875813",
+                            "createdAt": "2025-11-17T01:47:08.973Z",
+                            "updatedAt": "2025-11-17T01:47:08.973Z",
+                            "__v": 0
                         }
                     }
                 }
