@@ -31,6 +31,10 @@
         {
             "name": "attempts",
             "description": "Rotas para gerenciamento dos attempts"
+        },
+        {
+            "name": "ranking",
+            "description": "Rota para gerenciamento do ranking"
         }
     ],
     "paths": {
@@ -1091,6 +1095,41 @@
                     }
                 }
             }
+        },
+        "/ranking": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "ranking"
+                ],
+                "summary": "Retorna a pontuação total de todos os usuários",
+                "responses": {
+                    "200": {
+                        "description": "Ranking dos usuários listados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rankingResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1836,6 +1875,50 @@
                             }
                         ]
                     }
+                }
+            },
+            "rankingResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Usuário cadastrado com sucesso!"
+                    },
+                    "ranking": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "totalPoints": {
+                                    "type": "integer",
+                                    "example": 35
+                                },
+                                "userId": {
+                                    "type": "string",
+                                    "example": "68fbfe71aa3c1f58d0ca8ed0"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Eduardo"
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "success": true,
+                    "message": "Ranking dos usuários listados com sucesso!",
+                    "ranking": [
+                        {
+                            "totalPoints": 35,
+                            "userId": "68f2e4fc894e8097a2685e51",
+                            "name": "Eduardo"
+                        }
+                    ]
                 }
             }
         },
