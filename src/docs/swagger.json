@@ -26,7 +26,11 @@
         },
         {
             "name": "questions",
-            "description": "Rota para gerenciamento das questões"
+            "description": "Rotas para gerenciamento das questões"
+        },
+        {
+            "name": "attempts",
+            "description": "Rotas para gerenciamento dos attempts"
         }
     ],
     "paths": {
@@ -509,7 +513,7 @@
                             "type": "string"
                         }
                     },
-                      {
+                    {
                         "name": "difficulty",
                         "in": "query",
                         "description": "Dificuldade do quiz",
@@ -552,7 +556,7 @@
             }
         },
         "/questions": {
-             "post": {
+            "post": {
                 "security": [
                     {
                         "bearerAuth": []
@@ -561,7 +565,7 @@
                 "tags": [
                     "questions"
                 ],
-                "summary": "Criar um nova questão",
+                "summary": "Criar uma nova questão",
                 "description": "Realiza a criação de uma nova questão e adiciona a um quiz já existente",
                 "requestBody": {
                     "required": "true",
@@ -733,7 +737,7 @@
                         "schema": {
                             "type": "string"
                         }
-                    }   
+                    }
                 ],
                 "requestBody": {
                     "required": "true",
@@ -811,6 +815,269 @@
                     },
                     "404": {
                         "description": "Questão não encontrada"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/attempts/{quizId}/start": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "attempts"
+                ],
+                "summary": "Cria uma novo attempt para gerenciar o quiz",
+                "description": "Essa rota serve para o criar o attempt (ou tentativa), que será usado como base nas outras rotas para gerenciar o fluxo das respostas escolhidas pelo usuário durante o Quiz. A cada novo Quiz escolhido para ser iniciado um novo attempt é criado.",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID do Quiz que será iniciado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Nova tentativa criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/createAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID do Quiz inválido"
+                    },
+                    "404": {
+                        "description": "Quiz não encontrado"
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/attempts/{attemptId}/answer": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "attempts"
+                ],
+                "summary": "Gerencia a resposta de cada questão durante o quiz",
+                "description": "Essa rota informa se a resposta está correta e qual foi a pontuação obtida em cada questão",
+                "parameters": [
+                    {
+                        "name": "attemptId",
+                        "in": "path",
+                        "description": "ID do Attempt que será utilizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/answerAttemptRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Nova tentativa criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/answerAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erros possíveis de validação",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "attemptIdInvalido": {
+                                        "summary": "Attempt ID inválido",
+                                        "description": "O Attempt ID fornecido não está em um formato válido",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Attempt ID inválido!"
+                                        }
+                                    },
+                                    "questionIdInvalido": {
+                                        "summary": "ID da questão inválido",
+                                        "description": "O ID da questão fornecido não está em um formato válido",
+                                        "value": {
+                                            "success": false,
+                                            "message": "ID da questão inválido!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Erros possíveis de permissão",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "attemptIndisponivel": {
+                                        "summary": "Attempt indisponível",
+                                        "description": "O Attempt já foi finalizado",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Esse Attempt não está mais disponível! A tentativa já foi finalizada!"
+                                        }
+                                    },
+                                    "questionIndisponivel": {
+                                        "summary": "Questão já foi respondida",
+                                        "description": "O usuário já respondeu a questão selecionada",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Essa questão já foi respondida!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Erros possíveis de recurso não encontrado",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "attemptIndisponivel": {
+                                        "summary": "Attempt não encontrado",
+                                        "description": "O Attempt não existe",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Attempt não encontrado!"
+                                        }
+                                    },
+                                    "questionIndisponivel": {
+                                        "summary": "Questão não econtrada",
+                                        "description": "A questão não existe",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Questão não encontrada!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erro inesperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unexpectedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/attempts/{attemptId}/finish": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "attempts"
+                ],
+                "summary": "Finaliza o attempt",
+                "description": "Essa rota finaliza a tentativa, mostrando a pontuação final, porcentagem de acertos e histórico das questões que foram respondidas",
+                "parameters": [
+                    {
+                        "name": "attemptId",
+                        "in": "path",
+                        "description": "ID do Attempt que será finalizado",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tentativa finalizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/finishAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Attempt ID inválido"
+                    },
+                    "403": {
+                        "description": "Erros possíveis de permissão",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "usuarioSemPermissao": {
+                                        "summary": "Usuário sem permissão",
+                                        "description": "O Usuário não pode acessar o attempt",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Você não tem permissão para acessar Attempt!"
+                                        }
+                                    },
+                                    "attemptIndisponivel": {
+                                        "summary": "Attempt indisponível",
+                                        "description": "O Attempt já foi finalizado",
+                                        "value": {
+                                            "success": false,
+                                            "message": "Esse Attempt não está mais disponível! A tentativa já foi finalizada!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Attempt não encontrado!"
                     },
                     "default": {
                         "description": "Erro inesperado",
@@ -1245,7 +1512,11 @@
                         "items": {
                             "type": "string"
                         },
-                        "example": ["Opção um", "Opção dois", "Opção três"]
+                        "example": [
+                            "Opção um",
+                            "Opção dois",
+                            "Opção três"
+                        ]
                     },
                     "correctAnswer": {
                         "type": "integer",
@@ -1403,6 +1674,167 @@
                             "updatedAt": "2025-11-17T01:47:08.973Z",
                             "__v": 0
                         }
+                    }
+                }
+            },
+            "createAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Nova tentativa criada com sucesso!"
+                    },
+                    "attemptId": {
+                        "type": "string",
+                        "example": "691e47d9d62745c8e45d384d"
+                    },
+                    "quizSnapshot": {
+                        "type": "object",
+                        "example": {
+                            "title": "Exemplo de um título",
+                            "questionCount": 1
+                        }
+                    },
+                    "questions": {
+                        "type": "array",
+                        "example": [
+                            {
+                                "questionId": "691d039c40808a23015ab959",
+                                "text": "Aqui você coloca o texto da sua pergunta",
+                                "options": [
+                                    "Opção um",
+                                    "Opção dois",
+                                    "Opção três"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            "answerAttemptRequest": {
+                "type": "object",
+                "required": [
+                    "questionId",
+                    "selectedIndex"
+                ],
+                "properties": {
+                    "questionId": {
+                        "type": "string",
+                        "example": "68fbfe71aa3c1f58d0ca8ed0"
+                    },
+                    "selectedIndex": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                }
+            },
+            "answerAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Resposta da questão salva com sucesso!"
+                    },
+                    "correct": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "correctIndex": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "pointsAwarded": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            },
+            "finishAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Tentativa finalizada com sucesso!"
+                    },
+                    "attemptInfo": {
+                        "type": "object",
+                        "properties": {
+                            "attemptId": {
+                                "type": "string",
+                                "example": "691fbb6c7e77c694611cba15"
+                            },
+                            "score": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "totalPossibleScore": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "percentage": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "answers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "questionId": {
+                                            "type": "string",
+                                            "example": "691b22b591a4248f237173bf"
+                                        },
+                                        "selectedIndex": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "correct": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "pointsAwarded": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "_id": {
+                                            "type": "string",
+                                            "example": "691fbb7a7e77c694611cba1b"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "success": true,
+                    "message": "Tentativa finalizada com sucesso!",
+                    "attemptInfo": {
+                        "attemptId": "691fbb6c7e77c694611cba15",
+                        "score": 10,
+                        "totalPossibleScore": 10,
+                        "percentage": 100,
+                        "answers": [
+                            {
+                                "questionId": "691b22b591a4248f237173bf",
+                                "selectedIndex": 2,
+                                "correct": true,
+                                "pointsAwarded": 10,
+                                "_id": "691fbb7a7e77c694611cba1b"
+                            }
+                        ]
                     }
                 }
             }
