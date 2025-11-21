@@ -1331,15 +1331,15 @@
                 "properties": {
                     "title": {
                         "type": "string",
-                        "example": "Exemplo de um título"
+                        "example": "Quiz sobre frutas"
                     },
                     "description": {
                         "type": "string",
-                        "example": "Aqui você coloca a descrição do seu Quiz"
+                        "example": "Uma série de perguntas para testar seus conhecimentos básicos sobre frutas"
                     },
                     "category": {
                         "type": "string",
-                        "example": "Exemplo"
+                        "example": "Frutas"
                     },
                     "difficulty": {
                         "type": "string",
@@ -1370,10 +1370,10 @@
                     "quiz": {
                         "type": "object",
                         "example": {
-                            "title": "Exemplo de um título",
-                            "description": "Aqui você coloca a descrição do seu Quiz",
-                            "category": "Exemplo",
-                            "difficulty": "facíl",
+                            "title": "Quiz sobre frutas",
+                            "description": "Uma série de perguntas para testar seus conhecimentos básicos sobre frutas",
+                            "category": "Frutas",
+                            "difficulty": "fácil",
                             "questions": [],
                             "createdBy": "69168ecf5885c38aba875813",
                             "_id": "691a7e9ce964fc7ddfab63f2",
@@ -1399,15 +1399,15 @@
                         "type": "object",
                         "example": {
                             "_id": "691a83e99fd5d07f0a77e525",
-                            "title": "Exemplo de um título",
-                            "description": "Aqui você coloca a descrição do seu Quiz",
-                            "category": "Exemplo",
+                            "title": "Quiz sobre frutas",
+                            "description": "Uma série de perguntas para testar seus conhecimentos básicos sobre frutas",
+                            "category": "Frutas",
                             "difficulty": "facíl",
                             "questions": [
                                 {
                                     "_id": "691b22b591a4248f237173bf",
                                     "quizId": "691a83e99fd5d07f0a77e525",
-                                    "text": "Qual fruta é amarela?",
+                                    "text": "Qual fruta é conhecida por ser amarela e curvada?",
                                     "category": "Frutas",
                                     "difficulty": "fácil",
                                     "options": [
@@ -1416,6 +1416,42 @@
                                         "Banana"
                                     ],
                                     "correctAnswer": 2,
+                                    "source": "manual",
+                                    "createdBy": "69168ecf5885c38aba875813",
+                                    "createdAt": "2025-11-17T13:27:17.318Z",
+                                    "updatedAt": "2025-11-17T13:27:17.318Z",
+                                    "__v": 0
+                                },
+                                {
+                                    "_id": "68f1544a9e3823e04baa2d38",
+                                    "quizId": "691a83e99fd5d07f0a77e525",
+                                    "text": "Qual fruta é verde por fora e tem a polpa rosa com sementes pretas?",
+                                    "category": "Frutas",
+                                    "difficulty": "fácil",
+                                    "options": [
+                                        "Melancia",
+                                        "Maçã",
+                                        "Amora"
+                                    ],
+                                    "correctAnswer": 0,
+                                    "source": "manual",
+                                    "createdBy": "69168ecf5885c38aba875813",
+                                    "createdAt": "2025-11-17T13:27:17.318Z",
+                                    "updatedAt": "2025-11-17T13:27:17.318Z",
+                                    "__v": 0
+                                },
+                                {
+                                    "_id": "690bbe80fb3fffe11dd8564b",
+                                    "quizId": "691a83e99fd5d07f0a77e525",
+                                    "text": "Qual fruta é vermelha, doce e muito usada para fazer suco?",
+                                    "category": "Frutas",
+                                    "difficulty": "fácil",
+                                    "options": [
+                                        "Laranja",
+                                        "Morango",
+                                        "Abacaxi"
+                                    ],
+                                    "correctAnswer": 1,
                                     "source": "manual",
                                     "createdBy": "69168ecf5885c38aba875813",
                                     "createdAt": "2025-11-17T13:27:17.318Z",
@@ -1444,22 +1480,24 @@
                     },
                     "quizzes": {
                         "type": "object",
-                        "example": {
-                            "_id": "691a83e99fd5d07f0a77e525",
-                            "title": "Exemplo de um título",
-                            "description": "Aqui você coloca a descrição do seu Quiz",
-                            "category": "Exemplo",
-                            "difficulty": "fácil",
-                            "questions": [
-                                "691b22b591a4248f237173bf",
-                                "68f1544a9e3823e04baa2d38",
-                                "690bbe80fb3fffe11dd8564b"
-                            ],
-                            "createdBy": "69168ecf5885c38aba875813",
-                            "createdAt": "2025-11-17T01:47:08.973Z",
-                            "updatedAt": "2025-11-17T01:47:08.973Z",
-                            "__v": 0
-                        }
+                        "example": [
+                            {
+                                "_id": "691a83e99fd5d07f0a77e525",
+                                "title": "Quiz sobre frutas",
+                                "description": "Uma série de perguntas para testar seus conhecimentos básicos sobre frutas",
+                                "category": "Frutas",
+                                "difficulty": "fácil",
+                                "questions": [
+                                    "691b22b591a4248f237173bf",
+                                    "68f1544a9e3823e04baa2d38",
+                                    "690bbe80fb3fffe11dd8564b"
+                                ],
+                                "createdBy": "69168ecf5885c38aba875813",
+                                "createdAt": "2025-11-17T01:47:08.973Z",
+                                "updatedAt": "2025-11-17T01:47:08.973Z",
+                                "__v": 0
+                            }
+                        ]
                     }
                 }
             },
@@ -1468,15 +1506,15 @@
                 "properties": {
                     "title": {
                         "type": "string",
-                        "example": "Novo título do quiz"
+                        "example": "Quiz sobre carros"
                     },
                     "description": {
                         "type": "string",
-                        "example": "Descrição atualizada"
+                        "example": "Um quiz curto e fácil para testar seus conhecimentos básicos sobre automóveis"
                     },
                     "category": {
                         "type": "string",
-                        "example": "Nova categoria"
+                        "example": "Carros"
                     },
                     "difficulty": {
                         "type": "string",
@@ -1504,9 +1542,9 @@
                         "type": "object",
                         "example": {
                             "_id": "691a83e99fd5d07f0a77e525",
-                            "title": "Novo título do quiz",
-                            "description": "Descrição atualizada",
-                            "category": "Nova categoria",
+                            "title": "Quiz sobre carros",
+                            "description": "Um quiz curto e fácil para testar seus conhecimentos básicos sobre automóveis",
+                            "category": "Carros",
                             "difficulty": "médio",
                             "updatedAt": "2025-11-17T01:47:08.973Z"
                         }
@@ -1531,11 +1569,11 @@
                     },
                     "text": {
                         "type": "string",
-                        "example": "Aqui você coloca o texto da sua pergunta"
+                        "example": "Qual fruta é conhecida por ser amarela e curvada?"
                     },
                     "category": {
                         "type": "string",
-                        "example": "Exemplo"
+                        "example": "Frutas"
                     },
                     "difficulty": {
                         "type": "string",
@@ -1552,9 +1590,9 @@
                             "type": "string"
                         },
                         "example": [
-                            "Opção um",
-                            "Opção dois",
-                            "Opção três"
+                            "Laranja",
+                            "Uva",
+                            "Banana"
                         ]
                     },
                     "correctAnswer": {
@@ -1582,13 +1620,13 @@
                         "type": "object",
                         "example": {
                             "quizId": "691a83e99fd5d07f0a77e525",
-                            "text": "Aqui você coloca o texto da sua pergunta",
-                            "category": "Exemplo",
+                            "text": "Qual fruta é conhecida por ser amarela e curvada?",
+                            "category": "Frutas",
                             "difficulty": "facíl",
                             "options": [
-                                "Opção um",
-                                "Opção dois",
-                                "Opção três"
+                                "Laranja",
+                                "Uva",
+                                "Banana"
                             ],
                             "correctAnswer": 2,
                             "source": "manual",
@@ -1638,13 +1676,13 @@
                         "example": {
                             "_id": "691a83e99fd5d07f0a77e525",
                             "quizId": "691d037440808a23015ab954",
-                            "text": "Aqui você coloca o texto da sua pergunta",
-                            "category": "Exemplo",
+                            "text": "Qual fruta é conhecida por ser amarela e curvada?",
+                            "category": "Frutas",
                             "difficulty": "fácil",
                             "options": [
-                                "Opção um",
-                                "Opção dois",
-                                "Opção três"
+                                "Laranja",
+                                "Uva",
+                                "Banana"
                             ],
                             "correctAnswer": 2,
                             "source": "manual",
@@ -1661,11 +1699,11 @@
                 "properties": {
                     "text": {
                         "type": "string",
-                        "example": "Novo texto da questão"
+                        "example": "Qual fruta é conhecida por estar em um cacho?"
                     },
                     "category": {
                         "type": "string",
-                        "example": "Nova categoria"
+                        "example": "Frutas"
                     },
                     "difficulty": {
                         "type": "string",
@@ -1676,9 +1714,20 @@
                         ],
                         "example": "médio"
                     },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Uva",
+                            "Pera",
+                            "Melancia"
+                        ]
+                    },
                     "correctAnswer": {
                         "type": "integer",
-                        "example": 1
+                        "example": 0
                     }
                 }
             },
@@ -1698,15 +1747,15 @@
                         "example": {
                             "_id": "691a83e99fd5d07f0a77e525",
                             "quizId": "691d037440808a23015ab954",
-                            "text": "Aqui você coloca o texto da sua pergunta",
-                            "category": "Nova categoria",
+                            "text": "Qual fruta é conhecida por estar em um cacho?",
+                            "category": "Frutas",
                             "difficulty": "médio",
                             "options": [
-                                "Opção um",
-                                "Opção dois",
-                                "Opção três"
+                                "Uva",
+                                "Pera",
+                                "Melancia"
                             ],
-                            "correctAnswer": 1,
+                            "correctAnswer": 0,
                             "source": "manual",
                             "createdBy": "69168ecf5885c38aba875813",
                             "createdAt": "2025-11-17T01:47:08.973Z",
@@ -1734,7 +1783,7 @@
                     "quizSnapshot": {
                         "type": "object",
                         "example": {
-                            "title": "Exemplo de um título",
+                            "title": "Quiz sobre frutas",
                             "questionCount": 1
                         }
                     },
@@ -1743,11 +1792,29 @@
                         "example": [
                             {
                                 "questionId": "691d039c40808a23015ab959",
-                                "text": "Aqui você coloca o texto da sua pergunta",
+                                "text": "Qual fruta é conhecida por ser amarela e curvada?",
                                 "options": [
-                                    "Opção um",
-                                    "Opção dois",
-                                    "Opção três"
+                                    "Laranja",
+                                    "Uva",
+                                    "Banana"
+                                ]
+                            },
+                            {
+                                "questionId": "691d039c40808a23015ab959",
+                                "text": "Qual fruta é verde por fora e tem a polpa rosa com sementes pretas?",
+                                "options": [
+                                    "Melancia",
+                                    "Maçã",
+                                    "Amora"
+                                ]
+                            },
+                            {
+                                "questionId": "691d039c40808a23015ab959",
+                                "text": "Qual fruta é vermelha, doce e muito usada para fazer suco?",
+                                "options": [
+                                    "Laranja",
+                                    "Morango",
+                                    "Abacaxi"
                                 ]
                             }
                         ]
@@ -1917,6 +1984,16 @@
                             "totalPoints": 35,
                             "userId": "68f2e4fc894e8097a2685e51",
                             "name": "Eduardo"
+                        },
+                        {
+                            "totalPoints": 23,
+                            "userId": "69168ecf5885c38aba875813",
+                            "name": "Camile"
+                        },
+                        {
+                            "totalPoints": 12,
+                            "userId": "691b25b7e47cb7ee243b27c9",
+                            "name": "Maria"
                         }
                     ]
                 }
