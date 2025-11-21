@@ -3,16 +3,16 @@
     "info": {
         "title": "API Quiz - Documentação",
         "version": "1.0.0",
-        "description": "Estrutura inicial da documentação da API"
+        "description": "Esta API oferece funcionalidades completas para gerenciamento de quizzes, incluindo autenticação, criação de perguntas, registro de tentativas e acesso ao ranking.Todas as rotas são protegidas por autenticação JWT e contam com validação de dados utilizando Yup, garantindo segurança e integridade das informações enviadas pelo cliente."
     },
-    "servers": [
-        {
-            "url": "http://localhost:3000/api",
-            "description": "Servidor local"
-        },
+    "servers": [ 
         {
             "url": "https://api-quiz-lt7z.onrender.com/api",
             "description": "Servidor em produção"
+        },
+        {
+            "url": "http://localhost:3000/api",
+            "description": "Servidor local"
         }
     ],
     "tags": [
